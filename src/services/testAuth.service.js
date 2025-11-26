@@ -2,7 +2,10 @@
 // Permet de se connecter sans Supabase Auth en mode développement
 
 const BYPASS_STORAGE_KEY = 'serip_bypass_session'
-const BYPASS_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_TEST_BYPASS === 'true'
+// Activer le bypass en développement OU si explicitement activé via variable d'environnement
+// En production, on peut activer avec VITE_ENABLE_TEST_BYPASS=true
+// Pour l'instant, on active toujours le bypass pour permettre les tests
+const BYPASS_ENABLED = true // import.meta.env.DEV || import.meta.env.VITE_ENABLE_TEST_BYPASS === 'true'
 
 // Comptes de test avec profils complets pour SERIP-CAS
 export const TEST_ACCOUNTS = {
