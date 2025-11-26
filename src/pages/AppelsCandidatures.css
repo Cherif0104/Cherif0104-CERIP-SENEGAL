@@ -1,0 +1,222 @@
+.appels-page {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.appels-header {
+  margin-bottom: 2rem;
+}
+
+.appels-header-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.appels-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.appels-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.appels-filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+}
+
+.appels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.appel-card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--color-gray-200);
+}
+
+.appel-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.appel-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.appel-card-title {
+  flex: 1;
+}
+
+.appel-card-title h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 0.5rem 0;
+}
+
+.appel-statut {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.statut-ouvert {
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+.statut-ferme {
+  background: var(--color-error-light);
+  color: var(--color-error-dark);
+}
+
+.statut-cloture {
+  background: var(--color-gray-200);
+  color: var(--color-gray-700);
+}
+
+.statut-default {
+  background: var(--color-gray-200);
+  color: var(--color-gray-700);
+}
+
+.appel-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  color: var(--color-gray-700);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-icon:hover {
+  background: var(--color-gray-50);
+  border-color: var(--color-gray-400);
+}
+
+.btn-icon--warning {
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.btn-icon--warning:hover {
+  background: var(--color-warning-light);
+  border-color: var(--color-warning);
+}
+
+.btn-icon--danger {
+  color: var(--color-error);
+  border-color: var(--color-error-light);
+}
+
+.btn-icon--danger:hover {
+  background: var(--color-error-light);
+  border-color: var(--color-error);
+}
+
+.appel-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.appel-description {
+  color: var(--color-gray-700);
+  line-height: 1.6;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.appel-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.appel-info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+}
+
+.appel-candidats-count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--color-primary-light);
+  border-radius: var(--radius-md);
+  color: var(--color-primary-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .appels-page {
+    padding: 1rem;
+  }
+
+  .appels-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .appels-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

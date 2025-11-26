@@ -1,0 +1,84 @@
+/* Thème par défaut (CERIP) - Inspiré du dashboard Healthcare */
+.app.theme-cerip {
+  --color-primary: #d7263d;
+  --color-primary-dark: #ad1c32;
+  --color-primary-light: #f15c75;
+  --color-primary-lighter: #fce7ea;
+  --sidebar-bg: linear-gradient(180deg, #d7263d 0%, #ad1c32 100%);
+  --sidebar-text: #ffffff;
+}
+
+/* Thème SERIP-CAS (par défaut) */
+.app.theme-serip {
+  --color-primary: #d7263d;
+  --color-primary-dark: #ad1c32;
+  --color-primary-light: #f15c75;
+  --color-primary-lighter: #fce7ea;
+  --sidebar-bg: linear-gradient(180deg, #d7263d 0%, #ad1c32 100%);
+  --sidebar-text: #ffffff;
+}
+
+/* Thème Chef de Projet */
+.app.theme-chef-projet {
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-primary-light: #3b82f6;
+  --color-primary-lighter: #dbeafe;
+  --sidebar-bg: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  --sidebar-text: #ffffff;
+}
+
+.app.theme-bailleur {
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-primary-light: #3b82f6;
+  --color-primary-lighter: #dbeafe;
+  --sidebar-bg: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  --sidebar-text: #ffffff;
+}
+
+.app.theme-beneficiaire {
+  --color-primary: #14b8a6;
+  --color-primary-dark: #0d9488;
+  --color-primary-light: #5eead4;
+  --color-primary-lighter: #ccfbf1;
+  --sidebar-bg: linear-gradient(180deg, #14b8a6 0%, #0d9488 100%);
+  --sidebar-text: #ffffff;
+}
+
+.app.theme-mentor {
+  --color-primary: #7c3aed;
+  --color-primary-dark: #6d28d9;
+  --color-primary-light: #a78bfa;
+  --color-primary-lighter: #ede9fe;
+  --sidebar-bg: linear-gradient(180deg, #7c3aed 0%, #6d28d9 100%);
+  --sidebar-text: #ffffff;
+}
+
+.app.theme-formateur {
+  --color-primary: #14b8a6;
+  --color-primary-dark: #0d9488;
+  --color-primary-light: #5eead4;
+  --color-primary-lighter: #ccfbf1;
+  --sidebar-bg: linear-gradient(180deg, #14b8a6 0%, #0d9488 100%);
+  --sidebar-text: #ffffff;
+}
+
+.app.theme-coach {
+  --color-primary: #f97316;
+  --color-primary-dark: #ea580c;
+  --color-primary-light: #fb923c;
+  --color-primary-lighter: #ffedd5;
+  --sidebar-bg: linear-gradient(180deg, #f97316 0%, #ea580c 100%);
+  --sidebar-text: #ffffff;
+}
+
+.app.theme-gperform {
+  --color-primary: #f97316;
+  --color-primary-dark: #ea580c;
+  --color-primary-light: #fb923c;
+  --color-primary-lighter: #ffedd5;
+  --sidebar-bg: linear-gradient(180deg, #f97316 0%, #ea580c 100%);
+  --sidebar-text: #ffffff;
+}
+
