@@ -18,21 +18,23 @@ export default function useAuth() {
             if (profile.data) {
               setUserProfile(profile.data)
             } else {
+              // Si pas de profil, créer un profil par défaut
               setUserProfile({
                 id: session.user.id,
                 email: session.user.email,
-                role: session.user.user_metadata?.role || 'ADMIN_SERIP',
-                nom: session.user.user_metadata?.nom || session.user.email,
-                prenom: session.user.user_metadata?.prenom || '',
+                role: 'ADMIN_SERIP',
+                nom: session.user.email?.split('@')[0] || 'Utilisateur',
+                prenom: '',
               })
             }
           } catch (error) {
+            console.error('Error loading user profile:', error)
             setUserProfile({
               id: session.user.id,
               email: session.user.email,
-              role: session.user.user_metadata?.role || 'ADMIN_SERIP',
-              nom: session.user.user_metadata?.nom || session.user.email,
-              prenom: session.user.user_metadata?.prenom || '',
+              role: 'ADMIN_SERIP',
+              nom: session.user.email?.split('@')[0] || 'Utilisateur',
+              prenom: '',
             })
           }
         }
@@ -56,16 +58,17 @@ export default function useAuth() {
             setUserProfile({
               id: session.user.id,
               email: session.user.email,
-              role: session.user.user_metadata?.role || 'ADMIN_SERIP',
-              nom: session.user.user_metadata?.nom || session.user.email,
-              prenom: session.user.user_metadata?.prenom || '',
+              role: 'ADMIN_SERIP',
+              nom: session.user.email?.split('@')[0] || 'Utilisateur',
+              prenom: '',
             })
           }
         } catch (error) {
+          console.error('Error loading user profile:', error)
           setUserProfile({
             id: session.user.id,
             email: session.user.email,
-            role: session.user.user_metadata?.role || 'ADMIN_SERIP',
+            role: 'ADMIN_SERIP',
             nom: session.user.email?.split('@')[0] || 'Utilisateur',
           })
         }

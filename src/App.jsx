@@ -30,40 +30,36 @@ function App() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Récupérer la session (bypass ou Supabase)
-    // Vérifier d'abord le bypass si activé
+    // Récupérer la session Supabase
     const checkSession = async () => {
       try {
         const { data: { session } } = await authService.getSession()
         if (session?.user) {
           setUser(session.user)
-          // Récupérer le profil utilisateur
+          // Récupérer le profil utilisateur depuis la table users
           try {
             const profile = await authService.getUserProfile(session.user.id)
             if (profile.data) {
               setUserProfile(profile.data)
             } else {
-              // Si pas de profil, utiliser les métadonnées de l'utilisateur
+              // Si pas de profil, créer un profil par défaut
               setUserProfile({
                 id: session.user.id,
                 email: session.user.email,
-                role: session.user.user_metadata?.role || 'ADMIN_SERIP',
-                nom: session.user.user_metadata?.nom || session.user.email,
-                prenom: session.user.user_metadata?.prenom || '',
+                role: 'ADMIN_SERIP',
+                nom: session.user.email?.split('@')[0] || 'Utilisateur',
+                prenom: '',
               })
             }
           } catch (error) {
-            // Ignorer les erreurs silencieusement pour les comptes de test
-            if (!session.user.id?.startsWith('00000000-0000-0000-0000-00000000')) {
-              console.error('Error loading user profile:', error)
-            }
-            // Utiliser les métadonnées en cas d'erreur
+            console.error('Error loading user profile:', error)
+            // Utiliser les données de base en cas d'erreur
             setUserProfile({
               id: session.user.id,
               email: session.user.email,
-              role: session.user.user_metadata?.role || 'ADMIN_SERIP',
-              nom: session.user.user_metadata?.nom || session.user.email,
-              prenom: session.user.user_metadata?.prenom || '',
+              role: 'ADMIN_SERIP',
+              nom: session.user.email?.split('@')[0] || 'Utilisateur',
+              prenom: '',
             })
           }
         }
@@ -85,25 +81,23 @@ function App() {
     
     checkSession()
     
-    return () => clearTimeout(timeout)
-
     // Écouter les changements d'état d'authentification
     const handleAuthChange = async (event, session) => {
       if (session?.user) {
         setUser(session.user)
-        // Récupérer le profil
+        // Récupérer le profil depuis la table users
         try {
           const profile = await authService.getUserProfile(session.user.id)
           if (profile.data) {
             setUserProfile(profile.data)
-      } else {
-            // Utiliser les métadonnées ou l'email comme fallback
+          } else {
+            // Utiliser les données de base comme fallback
             setUserProfile({
               id: session.user.id,
               email: session.user.email,
-              role: session.user.user_metadata?.role || 'ADMIN_SERIP',
-              nom: session.user.user_metadata?.nom || session.user.email?.split('@')[0] || 'Utilisateur',
-              prenom: session.user.user_metadata?.prenom || '',
+              role: 'ADMIN_SERIP',
+              nom: session.user.email?.split('@')[0] || 'Utilisateur',
+              prenom: '',
             })
           }
         } catch (error) {
@@ -112,11 +106,11 @@ function App() {
           setUserProfile({
             id: session.user.id,
             email: session.user.email,
-            role: session.user.user_metadata?.role || 'ADMIN_SERIP',
+            role: 'ADMIN_SERIP',
             nom: session.user.email?.split('@')[0] || 'Utilisateur',
           })
         }
-                                } else {
+      } else {
         setUser(null)
         setUserProfile(null)
       }
@@ -125,23 +119,13 @@ function App() {
     const authStateResult = authService.onAuthStateChange(handleAuthChange)
     const subscription = authStateResult?.data?.subscription
 
-    // Écouter aussi les changements de localStorage pour le bypass (autres onglets)
-    const handleStorageChange = (e) => {
-      if (e.key === 'serip_bypass_session' || e.key === 'cerip_bypass_session') {
-        authService.getSession().then(async ({ data: { session } }) => {
-          await handleAuthChange(session ? 'SIGNED_IN' : 'SIGNED_OUT', session)
-        })
-      }
-    }
-    window.addEventListener('storage', handleStorageChange)
-
     return () => {
+      clearTimeout(timeout)
       if (subscription && typeof subscription.unsubscribe === 'function') {
         subscription.unsubscribe()
       }
-      window.removeEventListener('storage', handleStorageChange)
     }
-  }, [])
+  }, [loading])
 
   if (loading) {
   return (
