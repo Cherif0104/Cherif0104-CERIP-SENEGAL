@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { authService } from '../services/auth.service'
 import Icon from '../components/common/Icon'
 import BackButton from '../components/common/BackButton'
@@ -7,6 +7,7 @@ import './Login.css'
 
 export default function Login() {
   const location = useLocation()
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -45,9 +46,9 @@ export default function Login() {
       }
 
       if (result.data?.user || result.data?.session?.user) {
-        // Connexion réussie - navigation immédiate avec rechargement complet
-        // Utiliser window.location pour forcer un rechargement et mettre à jour l'état
-        window.location.href = '/'
+        // Connexion réussie - on navigue vers le tableau de bord sans recharger toute l'app
+        setLoading(false)
+        navigate('/dashboard', { replace: true })
       } else {
         setError('Erreur lors de la connexion')
         setLoading(false)
