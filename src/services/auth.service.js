@@ -64,13 +64,21 @@ export const authService = {
         await new Promise(resolve => setTimeout(resolve, 500))
         
         // Vérifier si le profil existe, sinon le créer
-        const { data: existingProfile } = await supabase
+        // Utiliser maybeSingle() au lieu de single() pour éviter l'erreur 406
+        const { data: existingProfile, error: checkError } = await supabase
           .from('users')
           .select('id')
           .eq('id', authData.user.id)
-          .single()
+          .maybeSingle()
 
-        if (!existingProfile) {
+        // Si erreur 406 ou PGRST116, c'est que le profil n'existe pas (normal)
+        const profileDoesNotExist = !existingProfile && (
+          !checkError || 
+          checkError.code === 'PGRST116' || 
+          checkError.status === 406
+        )
+
+        if (profileDoesNotExist) {
           // Le trigger n'a pas fonctionné, créer le profil manuellement
           const { error: profileError } = await supabase
             .from('users')
@@ -86,9 +94,20 @@ export const authService = {
 
           if (profileError) {
             console.error('Error creating user profile after signup:', profileError)
+            console.error('Profile error details:', {
+              code: profileError.code,
+              message: profileError.message,
+              details: profileError.details,
+              hint: profileError.hint
+            })
             // Ne pas échouer l'inscription si le profil ne peut pas être créé
             // Il sera créé lors de la première connexion via ensureUserProfile
+          } else {
+            console.log('User profile created successfully after signup')
           }
+        } else if (checkError && checkError.code !== 'PGRST116' && checkError.status !== 406) {
+          // Autre type d'erreur (table n'existe pas, permissions, etc.)
+          console.error('Error checking user profile:', checkError)
         }
       }
 
@@ -121,15 +140,27 @@ export const authService = {
    */
   async getUserProfile(userId) {
     try {
+      // Utiliser maybeSingle() au lieu de single() pour éviter l'erreur 406
       const { data, error } = await supabase
         .from('users')
         .select('*')
         .eq('id', userId)
-        .single()
+        .maybeSingle()
 
       if (error) {
+        // Si erreur autre que "not found", logger les détails
+        if (error.code !== 'PGRST116' && error.status !== 406) {
+          console.error('Error fetching user profile:', error)
+          console.error('Error details:', {
+            code: error.code,
+            message: error.message,
+            details: error.details,
+            hint: error.hint
+          })
+        }
+        
         // Si l'utilisateur n'existe pas dans la table users, créer un profil par défaut
-        if (error.code === 'PGRST116') {
+        if (error.code === 'PGRST116' || error.status === 406 || !data) {
           // Récupérer les infos depuis auth.users
           const { data: { user } } = await supabase.auth.getUser()
           if (user) {
