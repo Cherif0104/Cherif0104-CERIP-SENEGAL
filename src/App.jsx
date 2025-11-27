@@ -30,18 +30,20 @@ function App() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let isMounted = true
+    
     // Récupérer la session Supabase
     const checkSession = async () => {
       try {
         const { data: { session } } = await authService.getSession()
-        if (session?.user) {
+        if (session?.user && isMounted) {
           setUser(session.user)
           // Récupérer le profil utilisateur depuis la table users
           try {
             const profile = await authService.getUserProfile(session.user.id)
-            if (profile.data) {
+            if (profile.data && isMounted) {
               setUserProfile(profile.data)
-            } else {
+            } else if (isMounted) {
               // Si pas de profil, créer un profil par défaut
               setUserProfile({
                 id: session.user.id,
@@ -54,26 +56,30 @@ function App() {
           } catch (error) {
             console.error('Error loading user profile:', error)
             // Utiliser les données de base en cas d'erreur
-            setUserProfile({
-              id: session.user.id,
-              email: session.user.email,
-              role: 'ADMIN_SERIP',
-              nom: session.user.email?.split('@')[0] || 'Utilisateur',
-              prenom: '',
-            })
+            if (isMounted) {
+              setUserProfile({
+                id: session.user.id,
+                email: session.user.email,
+                role: 'ADMIN_SERIP',
+                nom: session.user.email?.split('@')[0] || 'Utilisateur',
+                prenom: '',
+              })
+            }
           }
         }
       } catch (error) {
         console.error('Error checking session:', error)
         // En cas d'erreur, continuer sans utilisateur (redirection vers login)
       } finally {
-        setLoading(false)
+        if (isMounted) {
+          setLoading(false)
+        }
       }
     }
     
     // Timeout de sécurité pour éviter que l'app reste bloquée
     const timeout = setTimeout(() => {
-      if (loading) {
+      if (isMounted) {
         console.warn('Session check timeout, setting loading to false')
         setLoading(false)
       }
@@ -83,14 +89,16 @@ function App() {
     
     // Écouter les changements d'état d'authentification
     const handleAuthChange = async (event, session) => {
+      if (!isMounted) return
+      
       if (session?.user) {
         setUser(session.user)
         // Récupérer le profil depuis la table users
         try {
           const profile = await authService.getUserProfile(session.user.id)
-          if (profile.data) {
+          if (profile.data && isMounted) {
             setUserProfile(profile.data)
-          } else {
+          } else if (isMounted) {
             // Utiliser les données de base comme fallback
             setUserProfile({
               id: session.user.id,
@@ -103,14 +111,16 @@ function App() {
         } catch (error) {
           console.error('Error loading user profile:', error)
           // En cas d'erreur, utiliser au moins les données de base
-          setUserProfile({
-            id: session.user.id,
-            email: session.user.email,
-            role: 'ADMIN_SERIP',
-            nom: session.user.email?.split('@')[0] || 'Utilisateur',
-          })
+          if (isMounted) {
+            setUserProfile({
+              id: session.user.id,
+              email: session.user.email,
+              role: 'ADMIN_SERIP',
+              nom: session.user.email?.split('@')[0] || 'Utilisateur',
+            })
+          }
         }
-      } else {
+      } else if (isMounted) {
         setUser(null)
         setUserProfile(null)
       }
@@ -120,12 +130,13 @@ function App() {
     const subscription = authStateResult?.data?.subscription
 
     return () => {
+      isMounted = false
       clearTimeout(timeout)
       if (subscription && typeof subscription.unsubscribe === 'function') {
         subscription.unsubscribe()
       }
     }
-  }, [loading])
+  }, [])
 
   if (loading) {
   return (

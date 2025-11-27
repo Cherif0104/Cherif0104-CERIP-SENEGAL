@@ -57,28 +57,9 @@ export const authService = {
         return { data: null, error: authError }
       }
 
-      // Créer le profil dans la table users
-      if (authData?.user) {
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert({
-            id: authData.user.id,
-            email: authData.user.email,
-            nom,
-            prenom,
-            role: role || 'ADMIN_SERIP',
-            actif: true,
-            date_creation: new Date().toISOString()
-          })
-
-        if (profileError) {
-          console.error('Error creating user profile:', profileError)
-          // Ne pas échouer l'inscription si le profil existe déjà
-          if (profileError.code !== '23505') { // Code pour violation de contrainte unique
-            return { data: null, error: profileError }
-          }
-        }
-      }
+      // Le trigger Supabase créera automatiquement le profil dans la table users
+      // On ne fait pas d'insertion manuelle pour éviter les conflits
+      // Si le trigger échoue, ensureUserProfile sera appelé lors de la première connexion
 
       return { data: authData, error: null }
     } catch (err) {
