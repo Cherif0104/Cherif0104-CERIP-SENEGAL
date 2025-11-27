@@ -127,7 +127,7 @@ export default function Register() {
               </div>
               <div className="logo-text">
                 <h1 className="register-title">Créer un compte</h1>
-                <span className="logo-subtitle">SERIP-CAS - ERP de Gestion</span>
+                <span className="logo-subtitle">CERIP SENEGAL - ERP de Gestion</span>
               </div>
             </div>
             <p className="register-description">

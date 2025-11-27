@@ -109,7 +109,7 @@ export default function Sidebar({ role }) {
             color: 'var(--sidebar-text)',
             margin: 0
           }}>
-            SERIP-CAS
+            CERIP SENEGAL
           </h2>
         </div>
         <p style={{

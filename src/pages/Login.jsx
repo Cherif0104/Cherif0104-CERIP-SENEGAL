@@ -79,8 +79,8 @@ export default function Login() {
                 <Icon name="🏢" size={32} className="logo-icon" />
               </div>
               <div className="logo-text">
-                <h1 className="login-title">SERIP-CAS ERP</h1>
-                <span className="logo-subtitle">Système de Gestion Intégré</span>
+                <h1 className="login-title">CERIP SENEGAL</h1>
+                <span className="logo-subtitle">ERP de Gestion Intégré</span>
               </div>
             </div>
             <p className="login-description">

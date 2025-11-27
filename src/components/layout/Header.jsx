@@ -12,7 +12,7 @@ export default function Header({ user, onLogout }) {
           color: 'var(--color-gray-900)',
           margin: 0
         }}>
-          SERIP-CAS ERP
+          CERIP SENEGAL
         </h1>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

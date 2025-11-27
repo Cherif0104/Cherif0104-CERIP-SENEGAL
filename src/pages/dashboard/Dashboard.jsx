@@ -71,7 +71,7 @@ export default function Dashboard() {
   return (
     <div className="dashboard">
       <div className="dashboard-header">
-        <h1>Tableau de bord SERIP-CAS</h1>
+        <h1>Tableau de bord CERIP SENEGAL</h1>
         <p>Vue d'ensemble de vos programmes, projets, candidats et bénéficiaires</p>
       </div>
 
@@ -248,7 +248,7 @@ export default function Dashboard() {
         </div>
 
         <div className="dashboard-welcome">
-          <h2>Bienvenue sur l'ERP SERIP-CAS</h2>
+          <h2>Bienvenue sur l'ERP CERIP SENEGAL</h2>
           <p>Cette plateforme vous permet de gérer tous les aspects de votre incubateur :</p>
           <ul>
             <li>Gestion des programmes et projets</li>
