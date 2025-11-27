@@ -1,16 +1,30 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { authService } from '../services/auth.service'
 import Icon from '../components/common/Icon'
 import BackButton from '../components/common/BackButton'
 import './Login.css'
 
 export default function Login() {
+  const location = useLocation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
+
+  // Afficher le message de succès si l'utilisateur vient de s'inscrire
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message)
+      // Effacer le message après 5 secondes
+      const timer = setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [location.state])
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -124,6 +138,13 @@ export default function Login() {
                 </button>
               </div>
             </div>
+
+            {successMessage && (
+              <div className="success-message" role="alert">
+                <Icon name="✅" size={18} className="success-icon" />
+                <span className="success-text">{successMessage}</span>
+              </div>
+            )}
 
             {error && (
               <div className="error-message" role="alert">
