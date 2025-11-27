@@ -54,12 +54,43 @@ export const authService = {
       })
 
       if (authError) {
+        console.error('Supabase signup error:', authError)
         return { data: null, error: authError }
       }
 
-      // Le trigger Supabase créera automatiquement le profil dans la table users
-      // On ne fait pas d'insertion manuelle pour éviter les conflits
-      // Si le trigger échoue, ensureUserProfile sera appelé lors de la première connexion
+      // Si l'inscription réussit mais que le trigger échoue, créer le profil manuellement
+      if (authData?.user) {
+        // Attendre un peu pour laisser le trigger s'exécuter
+        await new Promise(resolve => setTimeout(resolve, 500))
+        
+        // Vérifier si le profil existe, sinon le créer
+        const { data: existingProfile } = await supabase
+          .from('users')
+          .select('id')
+          .eq('id', authData.user.id)
+          .single()
+
+        if (!existingProfile) {
+          // Le trigger n'a pas fonctionné, créer le profil manuellement
+          const { error: profileError } = await supabase
+            .from('users')
+            .insert({
+              id: authData.user.id,
+              email: authData.user.email,
+              nom: nom || authData.user.email?.split('@')[0] || 'Utilisateur',
+              prenom: prenom || '',
+              role: role || 'ADMIN_SERIP',
+              actif: true,
+              date_creation: new Date().toISOString()
+            })
+
+          if (profileError) {
+            console.error('Error creating user profile after signup:', profileError)
+            // Ne pas échouer l'inscription si le profil ne peut pas être créé
+            // Il sera créé lors de la première connexion via ensureUserProfile
+          }
+        }
+      }
 
       return { data: authData, error: null }
     } catch (err) {

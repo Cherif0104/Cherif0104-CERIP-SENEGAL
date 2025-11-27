@@ -76,7 +76,19 @@ export default function Register() {
       )
 
       if (result.error) {
-        setError(result.error.message || 'Erreur lors de la création du compte')
+        // Afficher un message d'erreur plus détaillé
+        let errorMessage = 'Erreur lors de la création du compte'
+        
+        if (result.error.message) {
+          errorMessage = result.error.message
+        } else if (result.error.status === 500) {
+          errorMessage = 'Erreur serveur. Veuillez vérifier que le trigger Supabase est bien configuré.'
+        } else if (result.error.status === 400) {
+          errorMessage = 'Données invalides. Vérifiez votre email et mot de passe.'
+        }
+        
+        console.error('Registration error details:', result.error)
+        setError(errorMessage)
         setLoading(false)
         return
       }
