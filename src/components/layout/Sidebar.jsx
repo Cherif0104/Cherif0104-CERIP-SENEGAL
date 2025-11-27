@@ -4,7 +4,7 @@ import Icon from '../common/Icon'
 import SidebarGroup from './SidebarGroup'
 import './Sidebar.css'
 
-// Menu ERP SERIP-CAS
+// Menu ERP CERIP
 const getMenuByRole = (role) => {
   const baseMenu = {
     standalone: [
@@ -13,8 +13,8 @@ const getMenuByRole = (role) => {
     groups: []
   }
 
-  // Menu pour ADMIN_SERIP et CHEF_PROJET
-  if (role === 'ADMIN_SERIP' || role === 'CHEF_PROJET') {
+  // Menu principal pour le rôle CERIP (rôle unique pour l'instant)
+  if (!role || role === 'CERIP') {
     baseMenu.groups = [
       {
         title: 'Programmes & Projets',
@@ -71,54 +71,12 @@ const getMenuByRole = (role) => {
     ]
   }
 
-  // Menu pour MENTOR
-  if (role === 'MENTOR') {
-    baseMenu.groups = [
-      {
-        title: 'Mon Portail',
-        icon: 'Handshake',
-        storageKey: 'portail_mentor',
-        items: [
-          { path: '/portail-mentor', label: 'Mes bénéficiaires', icon: 'Users' }
-        ]
-      }
-    ]
-  }
-
-  // Menu pour FORMATEUR
-  if (role === 'FORMATEUR') {
-    baseMenu.groups = [
-      {
-        title: 'Mon Portail',
-        icon: 'GraduationCap',
-        storageKey: 'portail_formateur',
-        items: [
-          { path: '/portail-formateur', label: 'Mes bénéficiaires', icon: 'Users' }
-        ]
-      }
-    ]
-  }
-
-  // Menu pour COACH
-  if (role === 'COACH') {
-    baseMenu.groups = [
-      {
-        title: 'Mon Portail',
-        icon: 'UserCircle',
-        storageKey: 'portail_coach',
-        items: [
-          { path: '/portail-coach', label: 'Mes bénéficiaires', icon: 'Users' }
-        ]
-      }
-    ]
-  }
-
   return baseMenu
 }
 
 export default function Sidebar({ role }) {
   const location = useLocation()
-  const menuStructure = getMenuByRole(role || 'ADMIN_SERIP')
+  const menuStructure = getMenuByRole(role || 'CERIP')
   const isActive = (path) => location.pathname === path
 
   return (

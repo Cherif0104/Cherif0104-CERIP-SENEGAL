@@ -72,7 +72,7 @@ export default function Register() {
         formData.password,
         formData.nom || formData.email.split('@')[0],
         formData.prenom || '',
-        'ADMIN_SERIP' // Rôle par défaut pour les nouvelles inscriptions
+        'CERIP' // Rôle unique CERIP par défaut pour les nouvelles inscriptions
       )
 
       if (result.error) {

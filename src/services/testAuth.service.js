@@ -12,14 +12,14 @@ export const TEST_ACCOUNTS = {
   'admin@serip-cas.sn': {
     id: '00000000-0000-0000-0000-000000000001',
     email: 'admin@serip-cas.sn',
-    role: 'ADMIN_SERIP',
+    role: 'CERIP',
     nom: 'Admin SERIP-CAS',
     prenom: 'Administrateur',
     password: 'admin123',
     profile: {
       id: '00000000-0000-0000-0000-000000000001',
       email: 'admin@serip-cas.sn',
-      role: 'ADMIN_SERIP',
+      role: 'CERIP',
       nom: 'Admin SERIP-CAS',
       prenom: 'Administrateur',
       telephone: '+221 77 123 45 67',

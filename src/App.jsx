@@ -48,7 +48,7 @@ function App() {
               setUserProfile({
                 id: session.user.id,
                 email: session.user.email,
-                role: 'ADMIN_SERIP',
+                role: 'CERIP',
                 nom: session.user.email?.split('@')[0] || 'Utilisateur',
                 prenom: '',
               })
@@ -60,7 +60,7 @@ function App() {
               setUserProfile({
                 id: session.user.id,
                 email: session.user.email,
-                role: 'ADMIN_SERIP',
+                role: 'CERIP',
                 nom: session.user.email?.split('@')[0] || 'Utilisateur',
                 prenom: '',
               })
@@ -103,7 +103,14 @@ function App() {
             setUserProfile({
               id: session.user.id,
               email: session.user.email,
-              role: 'ADMIN_SERIP',
+              role: 'CERIP',
+              nom: session.user.email?.split('@')[0] || 'Utilisateur',
+              prenom: '',
+            })
+            setUserProfile({
+              id: session.user.id,
+              email: session.user.email,
+              role: 'CERIP',
               nom: session.user.email?.split('@')[0] || 'Utilisateur',
               prenom: '',
             })
@@ -112,12 +119,12 @@ function App() {
           console.error('Error loading user profile:', error)
           // En cas d'erreur, utiliser au moins les données de base
           if (isMounted) {
-            setUserProfile({
-              id: session.user.id,
-              email: session.user.email,
-              role: 'ADMIN_SERIP',
-              nom: session.user.email?.split('@')[0] || 'Utilisateur',
-            })
+          setUserProfile({
+            id: session.user.id,
+            email: session.user.email,
+            role: 'CERIP',
+            nom: session.user.email?.split('@')[0] || 'Utilisateur',
+          })
           }
         }
       } else if (isMounted) {

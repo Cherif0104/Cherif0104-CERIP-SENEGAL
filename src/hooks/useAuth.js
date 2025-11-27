@@ -22,7 +22,7 @@ export default function useAuth() {
               setUserProfile({
                 id: session.user.id,
                 email: session.user.email,
-                role: 'ADMIN_SERIP',
+                role: 'CERIP',
                 nom: session.user.email?.split('@')[0] || 'Utilisateur',
                 prenom: '',
               })
@@ -32,7 +32,7 @@ export default function useAuth() {
             setUserProfile({
               id: session.user.id,
               email: session.user.email,
-              role: 'ADMIN_SERIP',
+              role: 'CERIP',
               nom: session.user.email?.split('@')[0] || 'Utilisateur',
               prenom: '',
             })
@@ -58,7 +58,7 @@ export default function useAuth() {
             setUserProfile({
               id: session.user.id,
               email: session.user.email,
-              role: 'ADMIN_SERIP',
+              role: 'CERIP',
               nom: session.user.email?.split('@')[0] || 'Utilisateur',
               prenom: '',
             })
@@ -68,7 +68,7 @@ export default function useAuth() {
           setUserProfile({
             id: session.user.id,
             email: session.user.email,
-            role: 'ADMIN_SERIP',
+            role: 'CERIP',
             nom: session.user.email?.split('@')[0] || 'Utilisateur',
           })
         }

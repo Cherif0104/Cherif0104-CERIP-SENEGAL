@@ -56,7 +56,7 @@ export default function Layout({ children, user }) {
     )
   }
 
-  const role = userProfile?.role || 'ADMIN_SERIP'
+  const role = userProfile?.role || 'CERIP'
   const theme = getThemeFromRole(role)
 
   return (

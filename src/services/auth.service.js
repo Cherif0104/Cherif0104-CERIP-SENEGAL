@@ -36,9 +36,9 @@ export const authService = {
    * @param {string} password - Mot de passe
    * @param {string} nom - Nom de l'utilisateur
    * @param {string} prenom - Prénom de l'utilisateur
-   * @param {string} role - Rôle de l'utilisateur (par défaut: ADMIN_SERIP)
+   * @param {string} role - Rôle de l'utilisateur (par défaut: CERIP)
    */
-  async signUp(email, password, nom, prenom, role = 'ADMIN_SERIP') {
+  async signUp(email, password, nom, prenom, role = 'CERIP') {
     try {
       // Créer le compte dans Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -87,7 +87,7 @@ export const authService = {
               email: authData.user.email,
               nom: nom || authData.user.email?.split('@')[0] || 'Utilisateur',
               prenom: prenom || '',
-              role: role || 'ADMIN_SERIP',
+              role: role || 'CERIP',
               actif: true,
               date_creation: new Date().toISOString()
             })
@@ -170,7 +170,8 @@ export const authService = {
                 email: user.email,
                 nom: user.user_metadata?.nom || user.email?.split('@')[0] || 'Utilisateur',
                 prenom: user.user_metadata?.prenom || '',
-                role: user.user_metadata?.role || 'ADMIN_SERIP',
+                role: user.user_metadata?.role || 'CERIP',
+                role: user.user_metadata?.role || 'CERIP',
                 actif: true
               },
               error: null
@@ -211,7 +212,7 @@ export const authService = {
             email: email,
             nom: user?.user_metadata?.nom || email?.split('@')[0] || 'Utilisateur',
             prenom: user?.user_metadata?.prenom || '',
-            role: user?.user_metadata?.role || 'ADMIN_SERIP',
+            role: user?.user_metadata?.role || 'CERIP',
             actif: true,
             date_creation: new Date().toISOString()
           })
