@@ -1,5 +1,5 @@
-// Service d'analytics pour le tableau de bord SERIP-CAS
-// Centralise les agrégations (counts, ratios, funnel) pour le rôle OWNER/ADMIN_SERIP
+// Service d'analytics pour le tableau de bord CERIP SENEGAL
+// Centralise les agrégations (counts, ratios, funnel) pour le rôle CERIP
 
 import { supabase } from '../lib/supabase'
 

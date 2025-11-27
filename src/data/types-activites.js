@@ -1,4 +1,4 @@
-// Référentiel modulable des types d'activités SERIP-CAS
+// Référentiel modulable des types d'activités CERIP SENEGAL
 // Permet d'ajouter dynamiquement de nouveaux types de formations/accompagnements
 
 export const TYPES_ACTIVITES = {
