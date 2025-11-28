@@ -4,6 +4,8 @@ import { referentielsService } from '../../services/referentiels.service'
 import { toastService } from '../../services/toast.service'
 import './SelectWithCreate.css'
 
+const OTHER_VALUE = '__OTHER__'
+
 export default function SelectWithCreate({
   label,
   name,
@@ -14,48 +16,57 @@ export default function SelectWithCreate({
   placeholder = 'Sélectionner ou créer...',
   required = false,
   className = 'input',
-  multiple = false
+  multiple = false,
+  showOtherOption = true
 }) {
   const [isCreating, setIsCreating] = useState(false)
   const [newValue, setNewValue] = useState('')
 
   const handleCreate = async () => {
-    if (!newValue.trim()) return
+    const labelToCreate = newValue.trim()
+    if (!labelToCreate) return
 
     try {
-      // Créer dans le référentiel
       const { data, error } = await referentielsService.create({
         type: typeReferentiel,
-        code: newValue.toUpperCase().replace(/\s+/g, '_').replace(/[^A-Z0-9_]/g, ''),
-        label: newValue.trim(),
+        code: labelToCreate.toUpperCase().replace(/\s+/g, '_').replace(/[^A-Z0-9_]/g, ''),
+        label: labelToCreate,
         actif: true,
         ordre: (options.length + 1) * 10
       })
 
       if (error) {
-        toastService.error('Erreur lors de la création')
-        console.error(error)
+        console.error('Erreur Supabase referentiels.create:', error)
+        toastService.error(error.message || 'Erreur lors de la création')
       } else {
         toastService.success('Valeur ajoutée avec succès')
-        // Déclencher le changement avec la nouvelle valeur
+        const createdLabel = data?.label || labelToCreate
         const syntheticEvent = {
           target: {
             name,
-            value: multiple 
-              ? [...(Array.isArray(value) ? value : []), data?.label || newValue.trim()]
-              : (data?.label || newValue.trim())
+            value: multiple
+              ? [...(Array.isArray(value) ? value : []), createdLabel]
+              : createdLabel
           }
         }
         onChange(syntheticEvent)
         setIsCreating(false)
         setNewValue('')
-        // Optionnel : recharger les options depuis le parent via un callback
-        // Pour l'instant, on laisse le parent gérer le refresh
       }
     } catch (error) {
       console.error('Error creating referentiel:', error)
       toastService.error('Erreur lors de la création')
     }
+  }
+
+  const handleSelectChange = (e) => {
+    const selected = e.target.value
+    if (!multiple && showOtherOption && selected === OTHER_VALUE) {
+      setIsCreating(true)
+      setNewValue('')
+      return
+    }
+    onChange(e)
   }
 
   return (
@@ -143,7 +154,7 @@ export default function SelectWithCreate({
             id={name}
             name={name}
             value={value || ''}
-            onChange={onChange}
+            onChange={handleSelectChange}
             required={required}
             className={className}
           >
@@ -153,6 +164,9 @@ export default function SelectWithCreate({
                 {opt.label}
               </option>
             ))}
+            {showOtherOption && (
+              <option value={OTHER_VALUE}>Autre…</option>
+            )}
           </select>
         )
       )}

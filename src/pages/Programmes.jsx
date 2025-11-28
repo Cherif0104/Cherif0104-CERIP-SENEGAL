@@ -14,6 +14,7 @@ import './Programmes.css'
 
 export default function Programmes() {
   const navigate = useNavigate()
+  const [allProgrammes, setAllProgrammes] = useState([])
   const [programmes, setProgrammes] = useState([])
   const [loading, setLoading] = useState(true)
   const [deleteConfirm, setDeleteConfirm] = useState({ open: false, id: null })
@@ -23,9 +24,35 @@ export default function Programmes() {
     search: ''
   })
 
+  // Charger les programmes + stats une seule fois
   useEffect(() => {
     loadProgrammes()
-  }, [filters])
+  }, [])
+
+  // Réappliquer les filtres en mémoire
+  useEffect(() => {
+    applyFilters()
+  }, [filters, allProgrammes])
+
+  const applyFilters = (source = allProgrammes, currentFilters = filters) => {
+    let filtered = source
+
+    if (currentFilters.financeur) {
+      filtered = filtered.filter(p => p.financeur === currentFilters.financeur)
+    }
+    if (currentFilters.statut) {
+      filtered = filtered.filter(p => p.statut === currentFilters.statut)
+    }
+    if (currentFilters.search) {
+      const searchLower = currentFilters.search.toLowerCase()
+      filtered = filtered.filter(p =>
+        p.nom?.toLowerCase().includes(searchLower) ||
+        p.description?.toLowerCase().includes(searchLower)
+      )
+    }
+
+    setProgrammes(filtered)
+  }
 
   const loadProgrammes = async () => {
     setLoading(true)
@@ -70,22 +97,9 @@ export default function Programmes() {
           }
         })
 
-        // Filtrer les données
-        let filtered = enriched
-        if (filters.financeur) {
-          filtered = filtered.filter(p => p.financeur === filters.financeur)
-        }
-        if (filters.statut) {
-          filtered = filtered.filter(p => p.statut === filters.statut)
-        }
-        if (filters.search) {
-          const searchLower = filters.search.toLowerCase()
-          filtered = filtered.filter(p => 
-            p.nom?.toLowerCase().includes(searchLower) ||
-            p.description?.toLowerCase().includes(searchLower)
-          )
-        }
-        setProgrammes(filtered)
+        // Mémoriser la liste complète et appliquer les filtres courants
+        setAllProgrammes(enriched)
+        applyFilters(enriched, filters)
       }
     } catch (error) {
       console.error('Error loading programmes:', error)

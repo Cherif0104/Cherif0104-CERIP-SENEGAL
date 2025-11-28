@@ -11,6 +11,8 @@ import SelectWithCreate from '../components/common/SelectWithCreate'
 import ComboboxWithCreate from '../components/common/ComboboxWithCreate'
 import GeographicCascade from '../components/common/GeographicCascade'
 import IntervenantsSelector from '../components/common/IntervenantsSelector'
+import ModularSections from '../components/admin/ModularSections'
+import ReferentielIntegrator from '../components/admin/ReferentielIntegrator'
 import { getAllTypes } from '../data/types-activites'
 import './ProjetForm.css'
 
@@ -28,6 +30,7 @@ export default function ProjetForm() {
   const [programmes, setProgrammes] = useState([])
   const [statuts, setStatuts] = useState([])
   const [typesActivites, setTypesActivites] = useState([])
+  const [sectionsComplementaires, setSectionsComplementaires] = useState([])
   const [formData, setFormData] = useState({
     nom: '',
     description: '',
@@ -43,8 +46,7 @@ export default function ProjetForm() {
     coaches_ids: [],
     regions: [],
     departements: [],
-    communes: [],
-    meta: '{}'
+    communes: []
   })
 
   useEffect(() => {
@@ -113,9 +115,20 @@ export default function ProjetForm() {
           coaches_ids: data.coaches_ids || [],
           regions: data.regions || [],
           departements: data.departements || [],
-          communes: data.communes || [],
-          meta: JSON.stringify(data.meta || {}, null, 2)
+          communes: data.communes || []
         })
+        
+        // Charger les sections complémentaires depuis meta
+        if (data.meta && data.meta.sections_complementaires) {
+          setSectionsComplementaires(data.meta.sections_complementaires)
+        } else if (data.meta && Object.keys(data.meta).length > 0) {
+          // Migration depuis l'ancien format JSON vers sections_complementaires
+          const migratedSections = migrateMetaToSections(data.meta)
+          if (migratedSections.length > 0) {
+            setSectionsComplementaires(migratedSections)
+            toastService.info('Les données ont été migrées vers le nouveau format de sections')
+          }
+        }
       }
     } catch (error) {
       console.error('Error loading projet:', error)
@@ -135,24 +148,10 @@ export default function ProjetForm() {
     return errors
   }
 
-  // Validation du JSON meta
-  const validateMeta = () => {
-    const errors = {}
-    if (formData.meta && formData.meta.trim() !== '') {
-      try {
-        JSON.parse(formData.meta)
-      } catch (e) {
-        errors.meta = 'JSON invalide. Veuillez corriger la syntaxe.'
-      }
-    }
-    return errors
-  }
-
   // Validation générale
   const validateForm = () => {
     const dateErrors = validateDates()
-    const metaErrors = validateMeta()
-    const newErrors = { ...dateErrors, ...metaErrors }
+    const newErrors = { ...dateErrors }
     
     // Validation nom (min 3, max 200)
     if (!formData.nom || formData.nom.trim().length < 3) {
@@ -196,7 +195,9 @@ export default function ProjetForm() {
         date_debut: formData.date_debut || null,
         date_fin: formData.date_fin || null,
         programme_id: formData.programme_id || null,
-        meta: safeParseJson(formData.meta)
+        meta: {
+          sections_complementaires: sectionsComplementaires
+        }
       }
 
       let result
@@ -233,12 +234,6 @@ export default function ProjetForm() {
     setFormData(prev => {
       const newData = { ...prev, [name]: value }
       setIsDirty(true)
-      
-      // Validation en temps réel pour meta JSON
-      if (name === 'meta') {
-        const metaErrors = validateMeta()
-        setErrors(prev => ({ ...prev, ...metaErrors }))
-      }
       
       // Validation en temps réel pour dates
       if (name === 'date_debut' || name === 'date_fin') {
@@ -427,27 +422,19 @@ export default function ProjetForm() {
         </div>
 
         <div className="form-section">
-          <h2>Paramètres avancés (meta JSON)</h2>
-          <div className="form-grid">
-            <div className="form-group form-group--full">
-              <label>Meta (JSON)</label>
-              <textarea
-                name="meta"
-                value={formData.meta}
-                onChange={handleChange}
-                rows={6}
-                className={`input ${errors.meta ? 'input-error' : ''}`}
-                placeholder='{"plafond_subvention": 500000, "apport_minimum": 10}'
-              />
-              {errors.meta ? (
-                <span className="error-message">{errors.meta}</span>
-              ) : (
-                <small>
-                  Utilisé pour des options spécifiques projet sans changer le code.
-                </small>
-              )}
-            </div>
-          </div>
+          <ModularSections
+            sections={sectionsComplementaires}
+            onSectionsChange={setSectionsComplementaires}
+            mode="edit"
+          />
+        </div>
+
+        <div className="form-section">
+          <ReferentielIntegrator
+            entityType="projet"
+            entityId={id}
+            mode="edit"
+          />
         </div>
 
         <div className="form-actions">
@@ -482,11 +469,48 @@ export default function ProjetForm() {
   )
 }
 
-function safeParseJson(str) {
-  if (!str) return {}
-  try {
-    return JSON.parse(str)
-  } catch {
-    return {}
+// Fonction de migration depuis l'ancien format meta JSON vers sections_complementaires
+function migrateMetaToSections(meta) {
+  if (!meta || typeof meta !== 'object') {
+    return []
   }
+
+  const sections = []
+  const keys = Object.keys(meta).filter(key => key !== 'sections_complementaires')
+
+  if (keys.length > 0) {
+    // Créer une section "Données migrées" avec les champs de l'ancien meta
+    const champs = keys.map((key, index) => {
+      const value = meta[key]
+      let type = 'text'
+      
+      if (typeof value === 'number') {
+        type = 'number'
+      } else if (typeof value === 'boolean') {
+        type = 'checkbox'
+      } else if (Array.isArray(value)) {
+        type = 'multiselect'
+      }
+
+      return {
+        name: key,
+        label: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        type,
+        required: false,
+        ordre: index + 1,
+        value: value
+      }
+    })
+
+    sections.push({
+      id: `section_migrated_${Date.now()}`,
+      label: 'Données migrées',
+      icon: 'Archive',
+      ordre: 1,
+      collapsible: true,
+      champs
+    })
+  }
+
+  return sections
 }

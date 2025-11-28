@@ -280,30 +280,30 @@ table tbody tr:last-child td {
 
 .status-EN_ATTENTE,
 .status-BROUILLON {
-  background: var(--color-warning-light);
-  color: var(--color-warning-dark);
+  background: var(--color-warning);
+  color: white;
 }
 
 .status-ACCEPTE,
 .status-ACTIF,
 .status-OUVERT {
-  background: var(--color-success-light);
-  color: var(--color-success-dark);
+  background: var(--color-success);
+  color: white;
 }
 
 .status-REFUSE,
 .status-FERME {
-  background: var(--color-error-light);
-  color: var(--color-error-dark);
+  background: var(--color-error);
+  color: white;
 }
 
 .status-EN_TRAITEMENT,
 .status-EN_EVALUATION {
-  background: var(--color-info-light);
-  color: var(--color-info-dark);
+  background: var(--color-primary);
+  color: white;
 }
 
 .status-TERMINE {
-  background: var(--color-gray-100);
-  color: var(--color-gray-700);
+  background: var(--color-gray-600);
+  color: white;
 }

@@ -1,0 +1,261 @@
+.dossier-detail-page {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dossier-detail-header {
+  margin-bottom: 2rem;
+}
+
+.dossier-detail-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 1rem;
+}
+
+.dossier-detail-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 0.5rem 0;
+}
+
+.dossier-appel-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.dossier-appel-link button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.dossier-appel-link button:hover {
+  color: var(--color-primary-dark);
+}
+
+.dossier-detail-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.dossier-detail-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--color-gray-200);
+}
+
+.dossier-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--color-gray-600);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: -2px;
+}
+
+.dossier-tab:hover {
+  color: var(--color-primary);
+  background: var(--color-gray-50);
+}
+
+.dossier-tab--active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.dossier-detail-content {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.dossier-detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dossier-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.dossier-info-card {
+  padding: 1.5rem;
+  background: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-gray-200);
+}
+
+.dossier-info-card--full {
+  grid-column: 1 / -1;
+}
+
+.dossier-info-card h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  margin: 0 0 0.75rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dossier-info-card p {
+  font-size: 1rem;
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.dossier-statut-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  color: white;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.dossier-candidat-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dossier-candidat-link button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+}
+
+.dossier-candidat-link button:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+.dossier-email {
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+}
+
+.dossier-documents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dossier-document-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-gray-200);
+}
+
+.dossier-historique {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: relative;
+  padding-left: 2rem;
+}
+
+.dossier-historique::before {
+  content: '';
+  position: absolute;
+  left: 0.5rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-gray-300);
+}
+
+.dossier-historique-item {
+  display: flex;
+  gap: 1.5rem;
+  position: relative;
+}
+
+.dossier-historique-item::before {
+  content: '';
+  position: absolute;
+  left: -1.75rem;
+  top: 0.5rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: 2px solid var(--color-white);
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.dossier-historique-date {
+  min-width: 120px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+}
+
+.dossier-historique-content {
+  flex: 1;
+}
+
+.dossier-historique-content h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 0.25rem 0;
+}
+
+.dossier-historique-content p {
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .dossier-detail-page {
+    padding: 1rem;
+  }
+
+  .dossier-detail-header-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .dossier-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dossier-historique-item {
+    flex-direction: column;
+  }
+}

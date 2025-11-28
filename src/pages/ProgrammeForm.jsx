@@ -9,6 +9,9 @@ import LoadingState from '../components/common/LoadingState'
 import SelectWithCreate from '../components/common/SelectWithCreate'
 import ComboboxWithCreate from '../components/common/ComboboxWithCreate'
 import GeographicCascade from '../components/common/GeographicCascade'
+import ModularSections from '../components/admin/ModularSections'
+import ReferentielIntegrator from '../components/admin/ReferentielIntegrator'
+import BudgetLinesManager from '../components/programme/BudgetLinesManager'
 import './ProgrammeForm.css'
 
 export default function ProgrammeForm() {
@@ -31,6 +34,7 @@ export default function ProgrammeForm() {
   const [genres, setGenres] = useState([])
   const [niveauxRisque, setNiveauxRisque] = useState([])
   const [frequencesReporting, setFrequencesReporting] = useState([])
+  const [sectionsComplementaires, setSectionsComplementaires] = useState([])
   const [formData, setFormData] = useState({
     nom: '',
     description: '',
@@ -51,8 +55,7 @@ export default function ProgrammeForm() {
     objectif_beneficiaires: '',
     objectif_emplois: '',
     niveau_risque: '',
-    frequence_reporting: '',
-    meta: '{}'
+    frequence_reporting: ''
   })
 
   useEffect(() => {
@@ -136,9 +139,13 @@ export default function ProgrammeForm() {
           objectif_beneficiaires: data.objectif_beneficiaires || '',
           objectif_emplois: data.objectif_emplois || '',
           niveau_risque: data.niveau_risque || '',
-          frequence_reporting: data.frequence_reporting || '',
-          meta: JSON.stringify(data.meta || {}, null, 2)
+          frequence_reporting: data.frequence_reporting || ''
         })
+        
+        // Charger les sections complémentaires depuis meta
+        if (data.meta && data.meta.sections_complementaires) {
+          setSectionsComplementaires(data.meta.sections_complementaires)
+        }
       }
     } catch (error) {
       console.error('Error loading programme:', error)
@@ -150,32 +157,101 @@ export default function ProgrammeForm() {
   // Validation des dates
   const validateDates = () => {
     const errors = {}
-    if (formData.date_debut && formData.date_fin) {
-      if (new Date(formData.date_fin) < new Date(formData.date_debut)) {
-        errors.date_fin = 'La date de fin doit être postérieure à la date de début'
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    if (formData.date_debut) {
+      const dateDebut = new Date(formData.date_debut)
+      if (isNaN(dateDebut.getTime())) {
+        errors.date_debut = 'Date de début invalide'
+      }
+    }
+
+    if (formData.date_fin) {
+      const dateFin = new Date(formData.date_fin)
+      if (isNaN(dateFin.getTime())) {
+        errors.date_fin = 'Date de fin invalide'
+      } else if (formData.date_debut) {
+        const dateDebut = new Date(formData.date_debut)
+        if (dateFin < dateDebut) {
+          errors.date_fin = 'La date de fin doit être postérieure à la date de début'
+        }
+        // Vérifier que la durée est raisonnable (max 10 ans)
+        const diffYears = (dateFin - dateDebut) / (1000 * 60 * 60 * 24 * 365)
+        if (diffYears > 10) {
+          errors.date_fin = 'La durée du programme ne peut pas dépasser 10 ans'
+        }
+        if (diffYears < 0.1) {
+          errors.date_fin = 'La durée du programme doit être d\'au moins 1 mois'
+        }
+      }
+    }
+
+    return errors
+  }
+
+  // Validation du budget
+  const validateBudget = () => {
+    const errors = {}
+    if (formData.budget) {
+      const budgetValue = parseFloat(formData.budget.replace(/\s/g, ''))
+      if (isNaN(budgetValue)) {
+        errors.budget = 'Le budget doit être un nombre valide'
+      } else if (budgetValue < 0) {
+        errors.budget = 'Le budget ne peut pas être négatif'
+      } else if (budgetValue > 1000000000000) {
+        errors.budget = 'Le budget est trop élevé (max 1 000 000 000 000 FCFA)'
       }
     }
     return errors
   }
 
-  // Validation du JSON meta
-  const validateMeta = () => {
+  // Validation des objectifs
+  const validateObjectifs = () => {
     const errors = {}
-    if (formData.meta && formData.meta.trim() !== '') {
-      try {
-        JSON.parse(formData.meta)
-      } catch (e) {
-        errors.meta = 'JSON invalide. Veuillez corriger la syntaxe.'
+    if (formData.objectif_beneficiaires) {
+      const value = parseInt(formData.objectif_beneficiaires, 10)
+      if (isNaN(value) || value < 0) {
+        errors.objectif_beneficiaires = 'L\'objectif doit être un nombre positif'
+      } else if (value > 10000000) {
+        errors.objectif_beneficiaires = 'L\'objectif est trop élevé (max 10 000 000)'
+      }
+    }
+    if (formData.objectif_emplois) {
+      const value = parseInt(formData.objectif_emplois, 10)
+      if (isNaN(value) || value < 0) {
+        errors.objectif_emplois = 'L\'objectif doit être un nombre positif'
+      } else if (value > 1000000) {
+        errors.objectif_emplois = 'L\'objectif est trop élevé (max 1 000 000)'
+      }
+    }
+    return errors
+  }
+
+  // Validation du chef de projet (email si fourni)
+  const validateChefProjet = () => {
+    const errors = {}
+    if (formData.chef_projet) {
+      // Vérifier si c'est un email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (emailRegex.test(formData.chef_projet)) {
+        // C'est un email, validation OK
+      } else if (formData.chef_projet.trim().length < 2) {
+        errors.chef_projet = 'Le nom du chef de projet doit contenir au moins 2 caractères'
+      } else if (formData.chef_projet.length > 100) {
+        errors.chef_projet = 'Le nom ne peut pas dépasser 100 caractères'
       }
     }
     return errors
   }
 
   // Validation générale
-  const validateForm = () => {
+  const validateForm = (fieldName = null) => {
     const dateErrors = validateDates()
-    const metaErrors = validateMeta()
-    const newErrors = { ...dateErrors, ...metaErrors }
+    const budgetErrors = validateBudget()
+    const objectifsErrors = validateObjectifs()
+    const chefProjetErrors = validateChefProjet()
+    const newErrors = { ...dateErrors, ...budgetErrors, ...objectifsErrors, ...chefProjetErrors }
     
     // Validation nom (min 3, max 200)
     if (!formData.nom || formData.nom.trim().length < 3) {
@@ -184,12 +260,24 @@ export default function ProgrammeForm() {
       newErrors.nom = 'Le nom ne peut pas dépasser 200 caractères'
     }
 
-    // Validation objectifs (min 0)
-    if (formData.objectif_beneficiaires && parseInt(formData.objectif_beneficiaires) < 0) {
-      newErrors.objectif_beneficiaires = 'L\'objectif doit être positif'
+    // Validation description (max 5000 caractères)
+    if (formData.description && formData.description.length > 5000) {
+      newErrors.description = 'La description ne peut pas dépasser 5000 caractères'
     }
-    if (formData.objectif_emplois && parseInt(formData.objectif_emplois) < 0) {
-      newErrors.objectif_emplois = 'L\'objectif doit être positif'
+
+    // Validation financeur (requis)
+    if (!formData.financeur || formData.financeur.trim() === '') {
+      newErrors.financeur = 'Le financeur est obligatoire'
+    }
+
+    // Si on valide un champ spécifique, ne garder que les erreurs de ce champ
+    if (fieldName) {
+      const fieldErrors = {}
+      if (newErrors[fieldName]) {
+        fieldErrors[fieldName] = newErrors[fieldName]
+      }
+      setErrors(prev => ({ ...prev, ...fieldErrors }))
+      return !fieldErrors[fieldName]
     }
 
     setErrors(newErrors)
@@ -232,7 +320,9 @@ export default function ProgrammeForm() {
         objectif_emplois: formData.objectif_emplois
           ? parseInt(formData.objectif_emplois, 10)
           : null,
-        meta: safeParseJson(formData.meta)
+        meta: {
+          sections_complementaires: sectionsComplementaires
+        }
       }
 
       let result
@@ -266,21 +356,18 @@ export default function ProgrammeForm() {
     setFormData(prev => {
       const newData = { ...prev, [name]: value }
       setIsDirty(true)
-      
-      // Validation en temps réel pour meta JSON
-      if (name === 'meta') {
-        const metaErrors = validateMeta()
-        setErrors(prev => ({ ...prev, ...metaErrors }))
-      }
-      
-      // Validation en temps réel pour dates
-      if (name === 'date_debut' || name === 'date_fin') {
-        const dateErrors = validateDates()
-        setErrors(prev => ({ ...prev, ...dateErrors }))
-      }
+
+      // Validation en temps réel pour tous les champs
+      validateForm(name)
       
       return newData
     })
+  }
+
+  // Validation au blur (quand on quitte le champ)
+  const handleBlur = (e) => {
+    const { name } = e.target
+    validateForm(name)
   }
 
   const handleMultiSelectChange = (e, fieldName) => {
@@ -343,12 +430,16 @@ export default function ProgrammeForm() {
                 name="nom"
                 value={formData.nom}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 required
-                className={`input ${errors.nom ? 'input-error' : ''}`}
+                className={`input ${errors.nom ? 'input-error' : formData.nom && formData.nom.length >= 3 ? 'input-success' : ''}`}
                 placeholder="Ex: Programme d'entrepreneuriat digital"
                 maxLength={200}
               />
               {errors.nom && <span className="error-message">{errors.nom}</span>}
+              {!errors.nom && formData.nom && (
+                <span className="help-text">{formData.nom.length}/200 caractères</span>
+              )}
             </div>
 
             <div className="form-group form-group--full">
@@ -358,10 +449,16 @@ export default function ProgrammeForm() {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 rows={4}
-                className="input"
+                className={`input ${errors.description ? 'input-error' : ''}`}
                 placeholder="Description détaillée du programme..."
+                maxLength={5000}
               />
+              {errors.description && <span className="error-message">{errors.description}</span>}
+              {!errors.description && formData.description && (
+                <span className="help-text">{formData.description.length}/5000 caractères</span>
+              )}
             </div>
 
             <div className="form-group">
@@ -397,9 +494,12 @@ export default function ProgrammeForm() {
                 name="chef_projet"
                 value={formData.chef_projet}
                 onChange={handleChange}
-                className="input"
-                placeholder="Nom du chef de projet"
+                onBlur={handleBlur}
+                className={`input ${errors.chef_projet ? 'input-error' : formData.chef_projet && formData.chef_projet.length >= 2 ? 'input-success' : ''}`}
+                placeholder="Nom du chef de projet ou email"
+                maxLength={100}
               />
+              {errors.chef_projet && <span className="error-message">{errors.chef_projet}</span>}
             </div>
 
             <div className="form-group">
@@ -411,12 +511,14 @@ export default function ProgrammeForm() {
                   name="budget"
                   value={formatBudget(formData.budget)}
                   onChange={handleBudgetChange}
-                  className="input"
+                  onBlur={handleBlur}
+                  className={`input ${errors.budget ? 'input-error' : formData.budget && !errors.budget ? 'input-success' : ''}`}
                   placeholder="0"
                   inputMode="numeric"
                 />
                 <span className="input-suffix">XOF</span>
               </div>
+              {errors.budget && <span className="error-message">{errors.budget}</span>}
             </div>
 
             <div className="form-group">
@@ -427,9 +529,11 @@ export default function ProgrammeForm() {
                 name="date_debut"
                 value={formData.date_debut}
                 onChange={handleChange}
-                className={`input ${errors.date_fin ? 'input-error' : ''}`}
+                onBlur={handleBlur}
+                className={`input ${errors.date_debut ? 'input-error' : formData.date_debut && !errors.date_debut ? 'input-success' : ''}`}
                 max={formData.date_fin || undefined}
               />
+              {errors.date_debut && <span className="error-message">{errors.date_debut}</span>}
             </div>
 
             <div className="form-group">
@@ -440,7 +544,8 @@ export default function ProgrammeForm() {
                 name="date_fin"
                 value={formData.date_fin}
                 onChange={handleChange}
-                className={`input ${errors.date_fin ? 'input-error' : ''}`}
+                onBlur={handleBlur}
+                className={`input ${errors.date_fin ? 'input-error' : formData.date_fin && !errors.date_fin ? 'input-success' : ''}`}
                 min={formData.date_debut || undefined}
               />
               {errors.date_fin && <span className="error-message">{errors.date_fin}</span>}
@@ -542,8 +647,10 @@ export default function ProgrammeForm() {
                 name="objectif_beneficiaires"
                 value={formData.objectif_beneficiaires}
                 onChange={handleChange}
-                className={`input ${errors.objectif_beneficiaires ? 'input-error' : ''}`}
+                onBlur={handleBlur}
+                className={`input ${errors.objectif_beneficiaires ? 'input-error' : formData.objectif_beneficiaires && !errors.objectif_beneficiaires ? 'input-success' : ''}`}
                 min="0"
+                max="10000000"
               />
               {errors.objectif_beneficiaires && (
                 <span className="error-message">{errors.objectif_beneficiaires}</span>
@@ -556,8 +663,10 @@ export default function ProgrammeForm() {
                 name="objectif_emplois"
                 value={formData.objectif_emplois}
                 onChange={handleChange}
-                className={`input ${errors.objectif_emplois ? 'input-error' : ''}`}
+                onBlur={handleBlur}
+                className={`input ${errors.objectif_emplois ? 'input-error' : formData.objectif_emplois && !errors.objectif_emplois ? 'input-success' : ''}`}
                 min="0"
+                max="1000000"
               />
               {errors.objectif_emplois && (
                 <span className="error-message">{errors.objectif_emplois}</span>
@@ -589,28 +698,30 @@ export default function ProgrammeForm() {
         </div>
 
         <div className="form-section">
-          <h2>Paramètres avancés (meta JSON)</h2>
-          <div className="form-grid">
-            <div className="form-group form-group--full">
-              <label>Meta (JSON)</label>
-              <textarea
-                name="meta"
-                value={formData.meta}
-                onChange={handleChange}
-                rows={6}
-                className={`input ${errors.meta ? 'input-error' : ''}`}
-                placeholder='{"plafond_subvention": 500000, "apport_minimum": 10}'
-              />
-              {errors.meta ? (
-                <span className="error-message">{errors.meta}</span>
-              ) : (
-                <small>
-                  Utilisé pour des options spécifiques programme / bailleur sans changer le code.
-                </small>
-              )}
-            </div>
-          </div>
+          <ModularSections
+            sections={sectionsComplementaires}
+            onSectionsChange={setSectionsComplementaires}
+            mode="edit"
+          />
         </div>
+
+        <div className="form-section">
+          <ReferentielIntegrator
+            entityType="programme"
+            entityId={id}
+            mode="edit"
+          />
+        </div>
+
+        {isEdit && id && (
+          <div className="form-section">
+            <h2>Gestion budgétaire</h2>
+            <p className="form-section-description">
+              Gérez les lignes budgétaires détaillées de ce programme. Le budget global est défini ci-dessus.
+            </p>
+            <BudgetLinesManager programmeId={id} mode="edit" />
+          </div>
+        )}
 
         <div className="form-actions">
           <button
@@ -642,14 +753,5 @@ export default function ProgrammeForm() {
       </form>
     </div>
   )
-}
-
-function safeParseJson(str) {
-  if (!str) return {}
-  try {
-    return JSON.parse(str)
-  } catch {
-    return {}
-  }
 }
 

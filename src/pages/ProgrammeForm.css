@@ -89,11 +89,30 @@
   border-color: var(--color-error) !important;
 }
 
+.input-success {
+  border-color: var(--color-success) !important;
+}
+
 .error-message {
   color: var(--color-error);
   font-size: 0.75rem;
   margin-top: 0.25rem;
   display: block;
+}
+
+.help-text {
+  color: var(--color-gray-500);
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.input-success {
+  border-color: var(--color-success) !important;
+}
+
+:root {
+  --color-success: #10b981;
 }
 
 .input-with-suffix {

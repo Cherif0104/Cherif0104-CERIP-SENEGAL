@@ -1,4 +1,5 @@
 import Icon from '../common/Icon'
+import NotificationsDropdown from '../common/NotificationsDropdown'
 import './Header.css'
 
 export default function Header({ user, onLogout }) {
@@ -16,6 +17,7 @@ export default function Header({ user, onLogout }) {
         </h1>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <NotificationsDropdown />
         <div style={{ textAlign: 'right' }}>
           <div style={{
             fontSize: '0.875rem',

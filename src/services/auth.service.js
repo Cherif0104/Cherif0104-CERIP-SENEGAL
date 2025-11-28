@@ -9,23 +9,23 @@ export const authService = {
    */
   async signIn(email, password) {
     try {
+      console.log('[authService.signIn] start', { email })
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
       
       if (error) {
+        console.error('[authService.signIn] error', error)
         return { data: null, error }
       }
 
-      // Après connexion réussie, s'assurer que le profil existe dans la table users
-      if (data?.user) {
-        await this.ensureUserProfile(data.user.id, data.user.email)
-      }
-
+      // On ne bloque plus la connexion sur la création du profil en base
+      // Le profil sera créé/complété plus tard via ensureUserProfile si nécessaire
+      console.log('[authService.signIn] success, hasUser:', !!data?.user)
       return { data, error: null }
     } catch (err) {
-      console.error('Supabase auth error:', err)
+      console.error('[authService.signIn] exception', err)
       return { data: null, error: err }
     }
   },
@@ -40,6 +40,7 @@ export const authService = {
    */
   async signUp(email, password, nom, prenom, role = 'CERIP') {
     try {
+      console.log('[authService.signUp] start', { email, nom, prenom, role })
       // Créer le compte dans Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
@@ -54,12 +55,13 @@ export const authService = {
       })
 
       if (authError) {
-        console.error('Supabase signup error:', authError)
+        console.error('[authService.signUp] Supabase signup error:', authError)
         return { data: null, error: authError }
       }
 
       // Si l'inscription réussit mais que le trigger échoue, créer le profil manuellement
       if (authData?.user) {
+        console.log('[authService.signUp] user created in auth', { userId: authData.user.id })
         // Attendre un peu pour laisser le trigger s'exécuter
         await new Promise(resolve => setTimeout(resolve, 500))
         
@@ -93,8 +95,8 @@ export const authService = {
             })
 
           if (profileError) {
-            console.error('Error creating user profile after signup:', profileError)
-            console.error('Profile error details:', {
+            console.error('[authService.signUp] Error creating user profile after signup:', profileError)
+            console.error('[authService.signUp] Profile error details:', {
               code: profileError.code,
               message: profileError.message,
               details: profileError.details,
@@ -103,17 +105,17 @@ export const authService = {
             // Ne pas échouer l'inscription si le profil ne peut pas être créé
             // Il sera créé lors de la première connexion via ensureUserProfile
           } else {
-            console.log('User profile created successfully after signup')
+            console.log('[authService.signUp] User profile created successfully after signup')
           }
         } else if (checkError && checkError.code !== 'PGRST116' && checkError.status !== 406) {
           // Autre type d'erreur (table n'existe pas, permissions, etc.)
-          console.error('Error checking user profile:', checkError)
+          console.error('[authService.signUp] Error checking user profile:', checkError)
         }
       }
 
       return { data: authData, error: null }
     } catch (err) {
-      console.error('Sign up error:', err)
+      console.error('[authService.signUp] exception', err)
       return { data: null, error: err }
     }
   },
@@ -130,7 +132,9 @@ export const authService = {
    * Récupérer la session actuelle
    */
   async getSession() {
+    console.log('[authService.getSession] called')
     const { data, error } = await supabase.auth.getSession()
+    console.log('[authService.getSession] result', { hasSession: !!data?.session, error })
     return { data, error }
   },
 
@@ -140,6 +144,7 @@ export const authService = {
    */
   async getUserProfile(userId) {
     try {
+      console.log('[authService.getUserProfile] called', { userId })
       // Utiliser maybeSingle() au lieu de single() pour éviter l'erreur 406
       const { data, error } = await supabase
         .from('users')
@@ -150,8 +155,8 @@ export const authService = {
       if (error) {
         // Si erreur autre que "not found", logger les détails
         if (error.code !== 'PGRST116' && error.status !== 406) {
-          console.error('Error fetching user profile:', error)
-          console.error('Error details:', {
+          console.error('[authService.getUserProfile] Error fetching user profile:', error)
+          console.error('[authService.getUserProfile] Error details:', {
             code: error.code,
             message: error.message,
             details: error.details,
@@ -171,7 +176,6 @@ export const authService = {
                 nom: user.user_metadata?.nom || user.email?.split('@')[0] || 'Utilisateur',
                 prenom: user.user_metadata?.prenom || '',
                 role: user.user_metadata?.role || 'CERIP',
-                role: user.user_metadata?.role || 'CERIP',
                 actif: true
               },
               error: null
@@ -183,7 +187,7 @@ export const authService = {
 
       return { data, error: null }
     } catch (err) {
-      console.error('Error fetching user profile:', err)
+      console.error('[authService.getUserProfile] exception', err)
       return { data: null, error: err }
     }
   },
@@ -195,16 +199,22 @@ export const authService = {
    */
   async ensureUserProfile(userId, email) {
     try {
+      console.log('[authService.ensureUserProfile] called', { userId, email })
       // Vérifier si le profil existe
-      const { data: existingProfile } = await supabase
+      const { data: existingProfile, error: existingError } = await supabase
         .from('users')
         .select('id')
         .eq('id', userId)
-        .single()
+        .maybeSingle()
+
+      if (existingError && existingError.code !== 'PGRST116' && existingError.status !== 406) {
+        console.error('[authService.ensureUserProfile] error when checking existing profile', existingError)
+      }
 
       // Si le profil n'existe pas, le créer
       if (!existingProfile) {
         const { data: { user } } = await supabase.auth.getUser()
+        console.log('[authService.ensureUserProfile] no existing profile, creating one', { userId })
         const { error } = await supabase
           .from('users')
           .insert({
@@ -218,11 +228,11 @@ export const authService = {
           })
 
         if (error && error.code !== '23505') { // Ignorer si déjà existant
-          console.error('Error creating user profile:', error)
+          console.error('[authService.ensureUserProfile] Error creating user profile:', error)
         }
       }
     } catch (err) {
-      console.error('Error ensuring user profile:', err)
+      console.error('[authService.ensureUserProfile] exception', err)
     }
   },
 
@@ -232,6 +242,7 @@ export const authService = {
    */
   onAuthStateChange(callback) {
     const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('[authService.onAuthStateChange] event', { event, hasUser: !!session?.user })
       // Si l'utilisateur se connecte, s'assurer que le profil existe
       if (event === 'SIGNED_IN' && session?.user) {
         await this.ensureUserProfile(session.user.id, session.user.email)

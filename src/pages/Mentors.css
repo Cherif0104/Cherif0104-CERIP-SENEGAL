@@ -1,0 +1,140 @@
+.mentors-page {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.mentors-header {
+  margin-bottom: 2rem;
+}
+
+.mentors-header-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.mentors-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.mentors-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.mentors-filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.mentors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.mentor-card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--color-gray-200);
+}
+
+.mentor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.mentor-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.mentor-card-title {
+  flex: 1;
+}
+
+.mentor-card-title h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 0.5rem 0;
+}
+
+.mentor-statut {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  color: white;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.mentor-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.mentor-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mentor-info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+}
+
+.mentor-capacite {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: var(--color-primary-lighter);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  color: var(--color-primary-dark);
+}
+
+.mentor-competences {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  color: var(--color-gray-700);
+}
+
+@media (max-width: 768px) {
+  .mentors-page {
+    padding: 1rem;
+  }
+
+  .mentors-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .mentors-grid {
+    grid-template-columns: 1fr;
+  }
+}

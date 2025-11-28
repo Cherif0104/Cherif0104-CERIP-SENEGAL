@@ -19,6 +19,21 @@ export const referentielsService = {
     }
   },
 
+  async getAllByType(type) {
+    try {
+      const { data, error } = await supabase
+        .from(TABLE)
+        .select('*')
+        .eq('type', type)
+        .order('ordre', { ascending: true })
+
+      return { data: data || [], error }
+    } catch (error) {
+      console.error('Error fetching referentiels (admin):', error)
+      return { data: [], error }
+    }
+  },
+
   async create(referentiel) {
     try {
       const { data, error } = await supabase
@@ -41,6 +56,36 @@ export const referentielsService = {
     } catch (error) {
       console.error('Error creating referentiel:', error)
       return { data: null, error }
+    }
+  },
+
+  async update(id, patch) {
+    try {
+      const { data, error } = await supabase
+        .from(TABLE)
+        .update(patch)
+        .eq('id', id)
+        .select('*')
+        .single()
+
+      return { data, error }
+    } catch (error) {
+      console.error('Error updating referentiel:', error)
+      return { data: null, error }
+    }
+  },
+
+  async delete(id) {
+    try {
+      const { error } = await supabase
+        .from(TABLE)
+        .delete()
+        .eq('id', id)
+
+      return { error }
+    } catch (error) {
+      console.error('Error deleting referentiel:', error)
+      return { error }
     }
   }
 }

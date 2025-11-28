@@ -45,7 +45,8 @@ export default function Layout({ children, user }) {
 
   const handleLogout = async () => {
     await authService.signOut()
-    navigate('/login')
+    // Forcer un rechargement complet pour réinitialiser l'état d'auth
+    window.location.href = '/login'
   }
 
   if (loading) {

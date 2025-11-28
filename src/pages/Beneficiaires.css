@@ -94,8 +94,8 @@
 .beneficiaire-projet {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  background: var(--color-primary-light);
-  color: var(--color-primary-dark);
+  background: var(--color-primary);
+  color: white;
   border-radius: var(--radius-full);
   font-size: 0.75rem;
   font-weight: 600;
@@ -151,8 +151,8 @@
 }
 
 .beneficiaire-badge.plan-action {
-  background: var(--color-success-light);
-  color: var(--color-success-dark);
+  background: var(--color-success);
+  color: white;
 }
 
 @media (max-width: 768px) {

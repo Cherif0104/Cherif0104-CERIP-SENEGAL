@@ -28,9 +28,77 @@
 }
 
 .programme-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Onglets */
+.programme-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid var(--color-gray-200);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.programme-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.25rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--color-gray-600);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.programme-tab:hover:not(:disabled) {
+  color: var(--color-primary);
+  background: var(--color-gray-50);
+}
+
+.programme-tab.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: 600;
+}
+
+.programme-tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.programme-tab-content {
+  min-height: 400px;
+}
+
+.programme-budget-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.programme-tab-placeholder {
+  padding: 3rem 1rem;
+}
+
+/* Layout avec sidebar pour vue d'ensemble */
+.programme-detail-content .programme-detail-main {
   display: grid;
   grid-template-columns: 1fr 300px;
   gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .programme-detail-content .programme-detail-main {
+    grid-template-columns: 1fr;
+  }
 }
 
 .programme-detail-main {

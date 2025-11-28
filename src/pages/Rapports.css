@@ -1,0 +1,144 @@
+.rapports-page {
+  padding: 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.rapports-header {
+  margin-bottom: 2rem;
+}
+
+.rapports-header-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.rapports-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.rapports-filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.rapports-table-container {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.rapports-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rapports-table thead {
+  background: var(--color-gray-50);
+}
+
+.rapports-table th {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--color-gray-200);
+}
+
+.rapports-table td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-gray-100);
+  font-size: 0.9375rem;
+  color: var(--color-text);
+}
+
+.rapports-table tbody tr:hover {
+  background: var(--color-gray-50);
+}
+
+.rapports-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.rapport-statut {
+  display: inline-block;
+  padding: 0.375rem 0.75rem;
+  color: white;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-size: inherit;
+}
+
+.link-button:hover {
+  color: var(--color-primary-dark);
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  color: var(--color-gray-700);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-icon:hover {
+  background: var(--color-gray-50);
+  border-color: var(--color-gray-400);
+}
+
+@media (max-width: 1200px) {
+  .rapports-filters {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .rapports-page {
+    padding: 1rem;
+  }
+
+  .rapports-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .rapports-table-container {
+    overflow-x: auto;
+  }
+
+  .rapports-table {
+    min-width: 800px;
+  }
+}
+

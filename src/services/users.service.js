@@ -60,6 +60,28 @@ export const usersService = {
   },
 
   /**
+   * Récupère tous les utilisateurs
+   */
+  async getAll() {
+    try {
+      const { data, error } = await supabase
+        .from(TABLE)
+        .select('id, email, nom, prenom, role, telephone')
+        .eq('actif', true)
+        .order('nom', { ascending: true })
+
+      if (error) {
+        return { data: [], error }
+      }
+
+      return { data: data || [], error: null }
+    } catch (error) {
+      console.error('Error fetching users:', error)
+      return { data: [], error }
+    }
+  },
+
+  /**
    * Récupère un utilisateur par ID
    */
   async getById(id) {

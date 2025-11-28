@@ -101,23 +101,23 @@
 }
 
 .programme-statut--actif {
-  background: var(--color-success-light);
-  color: var(--color-success-dark);
+  background: var(--color-success);
+  color: white;
 }
 
 .programme-statut--en_preparation {
-  background: var(--color-info-light);
-  color: var(--color-info-dark);
+  background: var(--color-primary);
+  color: white;
 }
 
 .programme-statut--termine {
-  background: var(--color-gray-200);
-  color: var(--color-gray-700);
+  background: var(--color-gray-600);
+  color: white;
 }
 
 .programme-statut--suspendu {
-  background: var(--color-error-light);
-  color: var(--color-error-dark);
+  background: var(--color-error);
+  color: white;
 }
 
 .programme-card-actions {

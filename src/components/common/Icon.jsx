@@ -85,7 +85,23 @@ import {
   BookOpen,
   CalendarDays,
   Bookmark,
-  ChevronDown as ChevronDownIcon
+  ChevronDown as ChevronDownIcon,
+  ArrowRight,
+  Hash,
+  Square,
+  ClipboardCheck,
+  MessageSquare,
+  FileCheck,
+  FolderOpen,
+  FileSignature,
+  Building,
+  Smartphone,
+  HeartHandshake,
+  Scale,
+  FileDown,
+  Send,
+  Image,
+  Activity
 } from 'lucide-react'
 
 // Mapping des emojis vers les icônes lucide-react
@@ -221,6 +237,7 @@ const NAMED_ICONS = {
   Save,
   List,
   Link,
+  ArrowRight,
   CheckCircle: CheckCircle2,
   XCircle: X,
   CheckCheck,
@@ -236,7 +253,22 @@ const NAMED_ICONS = {
   HelpCircle,
   UserCheck,
   BookOpen,
-  Bookmark
+  Bookmark,
+  Hash,
+  Square,
+  ClipboardCheck,
+  MessageSquare,
+  FileCheck,
+  FolderOpen,
+  FileSignature,
+  Building,
+  Smartphone,
+  HandHeart: HeartHandshake,
+  Scale,
+  FileDown,
+  Send,
+  Image,
+  Activity
 }
 
 /**

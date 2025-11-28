@@ -31,7 +31,8 @@ const getMenuByRole = (role) => {
         storageKey: 'candidatures',
         items: [
           { path: '/appels-candidatures', label: 'Appels à candidatures', icon: 'Bell' },
-          { path: '/candidats', label: 'Pipeline candidats', icon: 'Sparkles' }
+          { path: '/candidats', label: 'Pipeline candidats', icon: 'Sparkles' },
+          { path: '/dossiers', label: 'Dossiers', icon: 'FileText' }
         ]
       },
       {
@@ -39,7 +40,8 @@ const getMenuByRole = (role) => {
         icon: 'Users',
         storageKey: 'beneficiaires',
         items: [
-          { path: '/beneficiaires', label: 'Liste bénéficiaires', icon: 'Users' }
+          { path: '/beneficiaires', label: 'Liste bénéficiaires', icon: 'Users' },
+          { path: '/formations', label: 'Formations', icon: 'GraduationCap' }
         ]
       },
       {
@@ -47,6 +49,7 @@ const getMenuByRole = (role) => {
         icon: 'UserCircle',
         storageKey: 'portails_intervenants',
         items: [
+          { path: '/mentors', label: 'Mentors', icon: 'Handshake' },
           { path: '/portail-mentor', label: 'Portail Mentor', icon: 'Handshake' },
           { path: '/portail-formateur', label: 'Portail Formateur', icon: 'GraduationCap' },
           { path: '/portail-coach', label: 'Portail Coach', icon: 'UserCircle' }
@@ -65,6 +68,7 @@ const getMenuByRole = (role) => {
         icon: 'Settings',
         storageKey: 'administration',
         items: [
+          { path: '/admin/referentiels', label: 'Référentiels', icon: 'List' },
           { path: '/parametres', label: 'Paramètres', icon: 'Settings' }
         ]
       }

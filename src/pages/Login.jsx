@@ -46,9 +46,10 @@ export default function Login() {
       }
 
       if (result.data?.user || result.data?.session?.user) {
-        // Connexion réussie - on navigue vers le tableau de bord sans recharger toute l'app
+        // Connexion réussie : on force un rechargement complet pour que App.jsx
+        // récupère immédiatement la session et affiche le dashboard
         setLoading(false)
-        navigate('/dashboard', { replace: true })
+        window.location.href = '/dashboard'
       } else {
         setError('Erreur lors de la connexion')
         setLoading(false)
