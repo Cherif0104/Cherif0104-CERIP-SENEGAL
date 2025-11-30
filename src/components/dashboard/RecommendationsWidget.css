@@ -1,0 +1,123 @@
+.recommendations-widget {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.recommendations-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.recommendations-header h3 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+}
+
+.refresh-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.refresh-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.recommendations-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.recommendation-item {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  border-left: 3px solid var(--border-color);
+  transition: all var(--transition-base);
+}
+
+.recommendation-item:hover {
+  background: var(--bg-secondary);
+}
+
+.recommendation-item.priority-high {
+  border-left-color: var(--cerip-red);
+  background: rgba(220, 38, 38, 0.05);
+}
+
+.recommendation-item.priority-medium {
+  border-left-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.recommendation-item.priority-low {
+  border-left-color: #10b981;
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.recommendation-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.recommendation-icon .priority-high {
+  color: var(--cerip-red);
+}
+
+.recommendation-icon .priority-medium {
+  color: #f59e0b;
+}
+
+.recommendation-icon .priority-low {
+  color: #10b981;
+}
+
+.recommendation-content {
+  flex: 1;
+}
+
+.recommendation-type {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--spacing-xs);
+}
+
+.recommendation-message {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.recommendations-empty {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--text-secondary);
+}
+
+.recommendations-empty svg {
+  margin-bottom: var(--spacing-md);
+  color: #10b981;
+}
+

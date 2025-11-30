@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/common/Button'
 import { Input } from '@/components/common/Input'
 import { LoadingState } from '@/components/common/LoadingState'
+import { Icon } from '@/components/common/Icon'
 import { logger } from '@/utils/logger'
 import './Login.css'
 
@@ -12,6 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const { signIn } = useAuth()
   const navigate = useNavigate()
 
@@ -47,57 +49,137 @@ export default function Login() {
   }
 
   return (
-    <div className="login-page">
-      <div className="login-container">
-        <div className="login-header">
-          <h1 className="login-title">CERIP Senegal</h1>
-          <p className="login-subtitle">ERP de Gestion des Programmes d'Insertion</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="login-form">
-          <Input
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            autoComplete="email"
-            disabled={loading}
-          />
-
-          <Input
-            label="Mot de passe"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            autoComplete="current-password"
-            disabled={loading}
-          />
-
-          {error && <div className="login-error">{error}</div>}
-
-          <Button
-            type="submit"
-            variant="primary"
-            loading={loading}
-            disabled={loading}
-            className="login-submit"
-          >
-            Se connecter
-          </Button>
-        </form>
-
-        <div className="login-footer">
-          <p>
-            Pas encore de compte ?{' '}
-            <Link to="/register" className="login-link">
-              Créer un compte
-            </Link>
+    <div className="auth-page login-page">
+      {/* Section illustrée */}
+      <div className="auth-illustration">
+        <div className="illustration-content">
+          <div className="logo-container">
+            <div className="logo-circle">
+              <Icon name="ShieldCheck" size={48} />
+            </div>
+          </div>
+          <h1 className="illustration-title">CERIP Senegal</h1>
+          <p className="illustration-subtitle">
+            ERP de Gestion des Programmes d'Insertion Professionnelle
           </p>
+          <div className="illustration-features">
+            <div className="feature-item">
+              <Icon name="CheckCircle" size={20} />
+              <span>Gestion complète des programmes</span>
+            </div>
+            <div className="feature-item">
+              <Icon name="CheckCircle" size={20} />
+              <span>Suivi des bénéficiaires</span>
+            </div>
+            <div className="feature-item">
+              <Icon name="CheckCircle" size={20} />
+              <span>Analytics et reporting</span>
+            </div>
+          </div>
+          <div className="illustration-decoration">
+            <div className="decoration-circle circle-1"></div>
+            <div className="decoration-circle circle-2"></div>
+            <div className="decoration-circle circle-3"></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section formulaire */}
+      <div className="auth-form-container">
+        <div className="auth-form-wrapper">
+          <div className="auth-header">
+            <h2 className="auth-title">Bienvenue</h2>
+            <p className="auth-subtitle">Connectez-vous à votre compte</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="form-group">
+              <label className="form-label">
+                <Icon name="Mail" size={18} />
+                Email
+              </label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="votre.email@exemple.com"
+                required
+                autoComplete="email"
+                disabled={loading}
+                className="form-input-modern"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">
+                <Icon name="Lock" size={18} />
+                Mot de passe
+              </label>
+              <div className="password-input-wrapper">
+                <Input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  autoComplete="current-password"
+                  disabled={loading}
+                  className="form-input-modern"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="password-toggle"
+                  tabIndex={-1}
+                >
+                  <Icon name={showPassword ? 'EyeOff' : 'Eye'} size={18} />
+                </button>
+              </div>
+            </div>
+
+            <div className="form-options">
+              <label className="remember-me">
+                <input type="checkbox" />
+                <span>Se souvenir de moi</span>
+              </label>
+              <Link to="/forgot-password" className="forgot-password">
+                Mot de passe oublié ?
+              </Link>
+            </div>
+
+            {error && (
+              <div className="auth-error">
+                <Icon name="AlertCircle" size={18} />
+                <span>{error}</span>
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              variant="primary"
+              loading={loading}
+              disabled={loading}
+              className="auth-submit-btn"
+            >
+              {loading ? 'Connexion...' : 'Se connecter'}
+              {!loading && <Icon name="ArrowRight" size={18} />}
+            </Button>
+          </form>
+
+          <div className="auth-divider">
+            <span>ou</span>
+          </div>
+
+          <div className="auth-footer">
+            <p>
+              Pas encore de compte ?{' '}
+              <Link to="/register" className="auth-link">
+                Créer un compte
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
   )
 }
-

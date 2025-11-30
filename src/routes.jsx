@@ -1,83 +1,122 @@
+import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
+import { LoadingState } from './components/common/LoadingState'
 import Layout from './components/layout/Layout'
 import ProtectedRoute from './components/layout/ProtectedRoute'
-import Login from './pages/auth/Login'
-import Register from './pages/auth/Register'
-import Dashboard from './pages/dashboard/Dashboard'
-import ProgrammesModule from './modules/programmes/ProgrammesModule'
-import ProjetsModule from './modules/projets/ProjetsModule'
-import CandidaturesModule from './modules/candidatures/CandidaturesModule'
-import BeneficiairesModule from './modules/beneficiaires/BeneficiairesModule'
-import IntervenantsModule from './modules/intervenants/IntervenantsModule'
-import ReportingModule from './modules/reporting/ReportingModule'
-import AdministrationModule from './modules/administration/AdministrationModule'
-import PartenairesModule from './modules/partenaires/PartenairesModule'
-import RHModule from './modules/ressources-humaines/RHModule'
-import ProgrammeDetail from './pages/programmes/ProgrammeDetail'
-import ProgrammeForm from './pages/programmes/ProgrammeForm'
-import ProjetDetail from './pages/projets/ProjetDetail'
-import ProjetForm from './pages/projets/ProjetForm'
-import TresorerieDashboard from './pages/finances/TresorerieDashboard'
-import CompteForm from './pages/finances/CompteForm'
-import FluxForm from './pages/finances/FluxForm'
-import PrevisionForm from './pages/finances/PrevisionForm'
-import GestionTemps from './pages/temps/GestionTemps'
-import TempsForm from './pages/temps/TempsForm'
-import AbsenceForm from './pages/temps/AbsenceForm'
-import PlanningForm from './pages/temps/PlanningForm'
-
-import AppelsPublic from './pages/public/AppelsPublic'
-import AppelDetailPublic from './pages/public/AppelDetailPublic'
-import FormulaireCandidature from './pages/public/FormulaireCandidature'
-import LoginCandidat from './pages/public/auth/LoginCandidat'
-import RegisterCandidat from './pages/public/auth/RegisterCandidat'
 import LayoutCandidat from './components/layout/LayoutCandidat'
 import ProtectedRouteCandidat from './components/layout/ProtectedRouteCandidat'
-import MesCandidatures from './pages/candidat/MesCandidatures'
-import CandidatureDetail from './pages/candidat/CandidatureDetail'
-import NotificationsCandidat from './pages/candidat/NotificationsCandidat'
-import MonProfil from './pages/candidat/MonProfil'
-import FormationDetail from './pages/formations/FormationDetail'
-import FormationForm from './pages/formations/FormationForm'
-import EmployeForm from './modules/ressources-humaines/tabs/employes/EmployeForm'
-import EmployeDetail from './modules/ressources-humaines/tabs/employes/EmployeDetail'
-import PosteForm from './modules/ressources-humaines/tabs/postes/PosteForm'
-import PosteDetail from './modules/ressources-humaines/tabs/postes/PosteDetail'
-import CompetenceForm from './modules/ressources-humaines/tabs/competences/CompetenceForm'
-import CompetenceDetail from './modules/ressources-humaines/tabs/competences/CompetenceDetail'
-import UtilisateurForm from './modules/administration/tabs/utilisateurs/UtilisateurForm'
-import UtilisateurDetail from './modules/administration/tabs/utilisateurs/UtilisateurDetail'
+
+// Lazy loading pour toutes les pages - réduit le temps de chargement initial
+const Login = lazy(() => import('./pages/auth/Login'))
+const Register = lazy(() => import('./pages/auth/Register'))
+const Dashboard = lazy(() => import('./pages/dashboard/Dashboard'))
+const ProgrammesModule = lazy(() => import('./modules/programmes/ProgrammesModule'))
+const ProjetsModule = lazy(() => import('./modules/projets/ProjetsModule'))
+const CandidaturesModule = lazy(() => import('./modules/candidatures/CandidaturesModule'))
+const BeneficiairesModule = lazy(() => import('./modules/beneficiaires/BeneficiairesModule'))
+const IntervenantsModule = lazy(() => import('./modules/intervenants/IntervenantsModule'))
+const ReportingModule = lazy(() => import('./modules/reporting/ReportingModule'))
+const AdministrationModule = lazy(() => import('./modules/administration/AdministrationModule'))
+const PartenairesModule = lazy(() => import('./modules/partenaires/PartenairesModule'))
+const RHModule = lazy(() => import('./modules/ressources-humaines/RHModule'))
+const ProgrammeDetail = lazy(() => import('./pages/programmes/ProgrammeDetail'))
+const ProgrammeForm = lazy(() => import('./pages/programmes/ProgrammeForm'))
+const ProjetDetail = lazy(() => import('./pages/projets/ProjetDetail'))
+const ProjetForm = lazy(() => import('./pages/projets/ProjetForm'))
+const TresorerieDashboard = lazy(() => import('./pages/finances/TresorerieDashboard'))
+const CompteForm = lazy(() => import('./pages/finances/CompteForm'))
+const FluxForm = lazy(() => import('./pages/finances/FluxForm'))
+const PrevisionForm = lazy(() => import('./pages/finances/PrevisionForm'))
+const GestionTemps = lazy(() => import('./pages/temps/GestionTemps'))
+const TempsForm = lazy(() => import('./pages/temps/TempsForm'))
+const AbsenceForm = lazy(() => import('./pages/temps/AbsenceForm'))
+const PlanningForm = lazy(() => import('./pages/temps/PlanningForm'))
+const AppelsPublic = lazy(() => import('./pages/public/AppelsPublic'))
+const AppelDetailPublic = lazy(() => import('./pages/public/AppelDetailPublic'))
+const FormulaireCandidature = lazy(() => import('./pages/public/FormulaireCandidature'))
+const LoginCandidat = lazy(() => import('./pages/public/auth/LoginCandidat'))
+const RegisterCandidat = lazy(() => import('./pages/public/auth/RegisterCandidat'))
+const MesCandidatures = lazy(() => import('./pages/candidat/MesCandidatures'))
+const CandidatureDetail = lazy(() => import('./pages/candidat/CandidatureDetail'))
+const NotificationsCandidat = lazy(() => import('./pages/candidat/NotificationsCandidat'))
+const MonProfil = lazy(() => import('./pages/candidat/MonProfil'))
+const FormationDetail = lazy(() => import('./pages/formations/FormationDetail'))
+const FormationForm = lazy(() => import('./pages/formations/FormationForm'))
+const EmployeForm = lazy(() => import('./modules/ressources-humaines/tabs/employes/EmployeForm'))
+const EmployeDetail = lazy(() => import('./modules/ressources-humaines/tabs/employes/EmployeDetail'))
+const PosteForm = lazy(() => import('./modules/ressources-humaines/tabs/postes/PosteForm'))
+const PosteDetail = lazy(() => import('./modules/ressources-humaines/tabs/postes/PosteDetail'))
+const CompetenceForm = lazy(() => import('./modules/ressources-humaines/tabs/competences/CompetenceForm'))
+const CompetenceDetail = lazy(() => import('./modules/ressources-humaines/tabs/competences/CompetenceDetail'))
+const UtilisateurForm = lazy(() => import('./modules/administration/tabs/utilisateurs/UtilisateurForm'))
+const UtilisateurDetail = lazy(() => import('./modules/administration/tabs/utilisateurs/UtilisateurDetail'))
+const Referentiels = lazy(() => import('./pages/admin/Referentiels'))
+
+// Wrapper pour lazy loading avec Suspense
+const LazyWrapper = ({ children }) => (
+  <Suspense fallback={<LoadingState message="Chargement..." />}>
+    {children}
+  </Suspense>
+)
 
 export const router = createBrowserRouter([
   {
     path: '/login',
-    element: <Login />,
+    element: (
+      <LazyWrapper>
+        <Login />
+      </LazyWrapper>
+    ),
   },
   {
     path: '/register',
-    element: <Register />,
+    element: (
+      <LazyWrapper>
+        <Register />
+      </LazyWrapper>
+    ),
   },
   // Routes publiques (sans authentification)
   {
     path: '/appels',
-    element: <AppelsPublic />,
+    element: (
+      <LazyWrapper>
+        <AppelsPublic />
+      </LazyWrapper>
+    ),
   },
   {
     path: '/appel/:id',
-    element: <AppelDetailPublic />,
+    element: (
+      <LazyWrapper>
+        <AppelDetailPublic />
+      </LazyWrapper>
+    ),
   },
   {
     path: '/candidature/new',
-    element: <FormulaireCandidature />,
+    element: (
+      <LazyWrapper>
+        <FormulaireCandidature />
+      </LazyWrapper>
+    ),
   },
   // Authentification candidats
   {
     path: '/candidat/login',
-    element: <LoginCandidat />,
+    element: (
+      <LazyWrapper>
+        <LoginCandidat />
+      </LazyWrapper>
+    ),
   },
   {
     path: '/candidat/register',
-    element: <RegisterCandidat />,
+    element: (
+      <LazyWrapper>
+        <RegisterCandidat />
+      </LazyWrapper>
+    ),
   },
   // Espace candidat (protégé)
   {
@@ -90,23 +129,43 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <MesCandidatures />,
+        element: (
+          <LazyWrapper>
+            <MesCandidatures />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'mes-candidatures',
-        element: <MesCandidatures />,
+        element: (
+          <LazyWrapper>
+            <MesCandidatures />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'candidature/:id',
-        element: <CandidatureDetail />,
+        element: (
+          <LazyWrapper>
+            <CandidatureDetail />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'notifications',
-        element: <NotificationsCandidat />,
+        element: (
+          <LazyWrapper>
+            <NotificationsCandidat />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'profil',
-        element: <MonProfil />,
+        element: (
+          <LazyWrapper>
+            <MonProfil />
+          </LazyWrapper>
+        ),
       },
     ],
   },
@@ -120,151 +179,299 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Dashboard />,
+        element: (
+          <LazyWrapper>
+            <Dashboard />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'programmes',
-        element: <ProgrammesModule />,
+        element: (
+          <LazyWrapper>
+            <ProgrammesModule />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'programmes/:id',
-        element: <ProgrammeDetail />,
+        element: (
+          <LazyWrapper>
+            <ProgrammeDetail />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'programmes/new',
-        element: <ProgrammeForm />,
+        element: (
+          <LazyWrapper>
+            <ProgrammeForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'projets',
-        element: <ProjetsModule />,
+        element: (
+          <LazyWrapper>
+            <ProjetsModule />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'projets/:id',
-        element: <ProjetDetail />,
+        element: (
+          <LazyWrapper>
+            <ProjetDetail />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'projets/new',
-        element: <ProjetForm />,
+        element: (
+          <LazyWrapper>
+            <ProjetForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'candidatures',
-        element: <CandidaturesModule />,
+        element: (
+          <LazyWrapper>
+            <CandidaturesModule />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'beneficiaires',
-        element: <BeneficiairesModule />,
+        element: (
+          <LazyWrapper>
+            <BeneficiairesModule />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'intervenants',
-        element: <IntervenantsModule />,
+        element: (
+          <LazyWrapper>
+            <IntervenantsModule />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'reporting',
-        element: <ReportingModule />,
+        element: (
+          <LazyWrapper>
+            <ReportingModule />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'administration',
-        element: <AdministrationModule />,
+        element: (
+          <LazyWrapper>
+            <AdministrationModule />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'partenaires',
-        element: <PartenairesModule />,
+        element: (
+          <LazyWrapper>
+            <PartenairesModule />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'rh',
-        element: <RHModule />,
+        element: (
+          <LazyWrapper>
+            <RHModule />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'tresorerie',
-        element: <TresorerieDashboard />,
+        element: (
+          <LazyWrapper>
+            <TresorerieDashboard />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'tresorerie/compte/new',
-        element: <CompteForm />,
+        element: (
+          <LazyWrapper>
+            <CompteForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'tresorerie/flux/new',
-        element: <FluxForm />,
+        element: (
+          <LazyWrapper>
+            <FluxForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'tresorerie/prevision/new',
-        element: <PrevisionForm />,
+        element: (
+          <LazyWrapper>
+            <PrevisionForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'gestion-temps',
-        element: <GestionTemps />,
+        element: (
+          <LazyWrapper>
+            <GestionTemps />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'gestion-temps/temps/new',
-        element: <TempsForm />,
+        element: (
+          <LazyWrapper>
+            <TempsForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'gestion-temps/absence/new',
-        element: <AbsenceForm />,
+        element: (
+          <LazyWrapper>
+            <AbsenceForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'gestion-temps/planning/new',
-        element: <PlanningForm />,
+        element: (
+          <LazyWrapper>
+            <PlanningForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'formations/:id',
-        element: <FormationDetail />,
+        element: (
+          <LazyWrapper>
+            <FormationDetail />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'formations/new',
-        element: <FormationForm />,
+        element: (
+          <LazyWrapper>
+            <FormationForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'formations/:id/edit',
-        element: <FormationForm />,
+        element: (
+          <LazyWrapper>
+            <FormationForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'rh/employes/new',
-        element: <EmployeForm />,
+        element: (
+          <LazyWrapper>
+            <EmployeForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'rh/employes/:id',
-        element: <EmployeDetail />,
+        element: (
+          <LazyWrapper>
+            <EmployeDetail />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'rh/employes/:id/edit',
-        element: <EmployeForm />,
+        element: (
+          <LazyWrapper>
+            <EmployeForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'rh/postes/new',
-        element: <PosteForm />,
+        element: (
+          <LazyWrapper>
+            <PosteForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'rh/postes/:id',
-        element: <PosteDetail />,
+        element: (
+          <LazyWrapper>
+            <PosteDetail />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'rh/postes/:id/edit',
-        element: <PosteForm />,
+        element: (
+          <LazyWrapper>
+            <PosteForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'rh/competences/new',
-        element: <CompetenceForm />,
+        element: (
+          <LazyWrapper>
+            <CompetenceForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'rh/competences/:id',
-        element: <CompetenceDetail />,
+        element: (
+          <LazyWrapper>
+            <CompetenceDetail />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'rh/competences/:id/edit',
-        element: <CompetenceForm />,
+        element: (
+          <LazyWrapper>
+            <CompetenceForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'administration/utilisateurs/new',
-        element: <UtilisateurForm />,
+        element: (
+          <LazyWrapper>
+            <UtilisateurForm />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'administration/utilisateurs/:id',
-        element: <UtilisateurDetail />,
+        element: (
+          <LazyWrapper>
+            <UtilisateurDetail />
+          </LazyWrapper>
+        ),
       },
       {
         path: 'administration/utilisateurs/:id/edit',
-        element: <UtilisateurForm />,
+        element: (
+          <LazyWrapper>
+            <UtilisateurForm />
+          </LazyWrapper>
+        ),
       },
     ],
   },

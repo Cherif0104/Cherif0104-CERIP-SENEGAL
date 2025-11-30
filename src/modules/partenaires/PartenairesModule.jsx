@@ -1,6 +1,9 @@
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ModuleHeader } from '@/components/modules/ModuleHeader'
 import { ModuleTabs } from '@/components/modules/ModuleTabs'
+import { Button } from '@/components/common/Button'
+import { Icon } from '@/components/common/Icon'
+import { PermissionGuard } from '@/components/common/PermissionGuard'
 import PartenairesDashboard from './tabs/dashboard/PartenairesDashboard'
 import OrganismesListe from './tabs/organismes/OrganismesListe'
 import FinanceursListe from './tabs/financeurs/FinanceursListe'
@@ -9,6 +12,7 @@ import StructuresListe from './tabs/structures/StructuresListe'
 import './PartenairesModule.css'
 
 export default function PartenairesModule() {
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const activeTab = searchParams.get('tab') || 'dashboard'
 
@@ -43,6 +47,14 @@ export default function PartenairesModule() {
         title="Partenaires & Structures"
         subtitle="Gestion des partenaires, financeurs et structures"
         onRefresh={() => window.location.reload()}
+        actions={
+          <PermissionGuard permission="partenaires.create">
+            <Button onClick={() => navigate('/partenaires/partenaires/new')} variant="primary">
+              <Icon name="Plus" size={16} />
+              Nouveau partenaire
+            </Button>
+          </PermissionGuard>
+        }
       />
       <ModuleTabs tabs={tabs} defaultTab="dashboard" />
       <div className="module-tab-content">{renderTabContent()}</div>

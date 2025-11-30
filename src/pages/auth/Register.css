@@ -1,75 +1,53 @@
-.register-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--cerip-red), var(--cerip-red-dark));
-  padding: var(--spacing-xl);
-}
+@import '../../styles/variables.css';
+@import './Login.css';
 
-.register-container {
-  width: 100%;
-  max-width: 520px;
-  background: var(--bg-primary);
-  border-radius: var(--radius-2xl);
-  padding: var(--spacing-3xl);
-  box-shadow: var(--shadow-xl);
-}
-
-.register-header {
-  text-align: center;
-  margin-bottom: var(--spacing-3xl);
-}
-
-.register-title {
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--cerip-red);
-  margin-bottom: var(--spacing-sm);
-}
-
-.register-subtitle {
-  font-size: var(--font-size-base);
-  color: var(--text-secondary);
-}
-
-.register-form {
-  margin-bottom: var(--spacing-xl);
-}
-
-.register-form-row {
+.register-page .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--spacing-lg);
 }
 
-.register-error {
-  padding: var(--spacing-md);
-  background: var(--error-light);
-  color: var(--error);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
-  margin-bottom: var(--spacing-lg);
-  text-align: center;
+.password-strength {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
 }
 
-.register-submit {
-  width: 100%;
-  margin-top: var(--spacing-lg);
+.strength-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-secondary);
+  border-radius: 2px;
+  overflow: hidden;
 }
 
-.register-footer {
-  text-align: center;
-  padding-top: var(--spacing-xl);
-  border-top: 1px solid var(--border-color);
+.strength-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: all 0.3s ease;
 }
 
-.register-link {
-  color: var(--cerip-red);
+.strength-label {
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
 }
 
-.register-link:hover {
-  text-decoration: underline;
+.input-error {
+  border-color: #dc2626 !important;
 }
 
+.input-error-message {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+@media (max-width: 768px) {
+  .register-page .form-row {
+    grid-template-columns: 1fr;
+  }
+}

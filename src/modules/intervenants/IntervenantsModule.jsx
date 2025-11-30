@@ -1,6 +1,9 @@
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ModuleHeader } from '@/components/modules/ModuleHeader'
 import { ModuleTabs } from '@/components/modules/ModuleTabs'
+import { Button } from '@/components/common/Button'
+import { Icon } from '@/components/common/Icon'
+import { PermissionGuard } from '@/components/common/PermissionGuard'
 import { IntervenantsDashboard } from '@/components/modules/IntervenantsDashboard'
 import MentorsListe from './tabs/mentors/MentorsListe'
 import PortailMentor from './tabs/portails/PortailMentor'
@@ -9,6 +12,7 @@ import PortailCoach from './tabs/portails/PortailCoach'
 import './IntervenantsModule.css'
 
 export default function IntervenantsModule() {
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const activeTab = searchParams.get('tab') || 'dashboard'
 
@@ -39,7 +43,18 @@ export default function IntervenantsModule() {
 
   return (
     <div className="intervenants-module">
-      <ModuleHeader title="Intervenants" subtitle="Gestion des intervenants" />
+      <ModuleHeader
+        title="Intervenants"
+        subtitle="Gestion des intervenants"
+        actions={
+          <PermissionGuard permission="intervenants.create">
+            <Button onClick={() => navigate('/mentors/new')} variant="primary">
+              <Icon name="Plus" size={16} />
+              Nouvel intervenant
+            </Button>
+          </PermissionGuard>
+        }
+      />
       <ModuleTabs tabs={tabs} defaultTab="dashboard" />
       <div className="module-tab-content">{renderTabContent()}</div>
     </div>

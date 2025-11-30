@@ -1,6 +1,9 @@
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ModuleHeader } from '@/components/modules/ModuleHeader'
 import { ModuleTabs } from '@/components/modules/ModuleTabs'
+import { Button } from '@/components/common/Button'
+import { Icon } from '@/components/common/Icon'
+import { PermissionGuard } from '@/components/common/PermissionGuard'
 import { BeneficiairesDashboard } from '@/components/modules/BeneficiairesDashboard'
 import Beneficiaires from '@/pages/beneficiaires/Beneficiaires'
 import FormationsTab from './tabs/formations/FormationsTab'
@@ -9,6 +12,7 @@ import SuiviTab from './tabs/suivi/SuiviTab'
 import './BeneficiairesModule.css'
 
 export default function BeneficiairesModule() {
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const activeTab = searchParams.get('tab') || 'dashboard'
 
@@ -39,7 +43,18 @@ export default function BeneficiairesModule() {
 
   return (
     <div className="beneficiaires-module">
-      <ModuleHeader title="Bénéficiaires" subtitle="Gestion des bénéficiaires" />
+      <ModuleHeader
+        title="Bénéficiaires"
+        subtitle="Gestion des bénéficiaires"
+        actions={
+          <PermissionGuard permission="beneficiaires.create">
+            <Button onClick={() => navigate('/beneficiaires/new')} variant="primary">
+              <Icon name="Plus" size={16} />
+              Nouveau bénéficiaire
+            </Button>
+          </PermissionGuard>
+        }
+      />
       <ModuleTabs tabs={tabs} defaultTab="dashboard" />
       <div className="module-tab-content">{renderTabContent()}</div>
     </div>

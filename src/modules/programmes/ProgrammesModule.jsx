@@ -1,6 +1,9 @@
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ModuleHeader } from '@/components/modules/ModuleHeader'
 import { ModuleTabs } from '@/components/modules/ModuleTabs'
+import { Button } from '@/components/common/Button'
+import { Icon } from '@/components/common/Icon'
+import { PermissionGuard } from '@/components/common/PermissionGuard'
 import ProgrammesDashboard from './tabs/dashboard/ProgrammesDashboard'
 import ProgrammesListe from './tabs/liste/ProgrammesListe'
 import BudgetsProgramme from './tabs/budgets/BudgetsProgramme'
@@ -11,6 +14,7 @@ import ReportingProgramme from './tabs/reporting/ReportingProgramme'
 import './ProgrammesModule.css'
 
 export default function ProgrammesModule() {
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const activeTab = searchParams.get('tab') || 'dashboard'
 
@@ -51,6 +55,14 @@ export default function ProgrammesModule() {
         title="Programmes"
         subtitle="Gestion des programmes d'insertion"
         onRefresh={() => window.location.reload()}
+        actions={
+          <PermissionGuard permission="programmes.create">
+            <Button onClick={() => navigate('/programmes/new')} variant="primary">
+              <Icon name="Plus" size={16} />
+              Nouveau programme
+            </Button>
+          </PermissionGuard>
+        }
       />
       <ModuleTabs tabs={tabs} defaultTab="dashboard" />
       <div className="module-tab-content">{renderTabContent()}</div>

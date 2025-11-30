@@ -1,13 +1,17 @@
+import { lazy, Suspense } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { ModuleHeader } from '@/components/modules/ModuleHeader'
 import { ModuleTabs } from '@/components/modules/ModuleTabs'
 import { AdministrationDashboard } from '@/components/modules/AdministrationDashboard'
-import Referentiels from '@/pages/admin/Referentiels'
-import UtilisateursListe from './tabs/utilisateurs/UtilisateursListe'
-import RolesPermissions from './tabs/roles/RolesPermissions'
-import ConfigurationSysteme from './tabs/configuration/ConfigurationSysteme'
-import LogsAudit from './tabs/logs/LogsAudit'
+import { LoadingState } from '@/components/common/LoadingState'
 import { EmptyState } from '@/components/common/EmptyState'
+
+// Lazy loading pour améliorer les performances
+const Referentiels = lazy(() => import('@/pages/admin/Referentiels'))
+const UtilisateursListe = lazy(() => import('./tabs/utilisateurs/UtilisateursListe'))
+const RolesPermissions = lazy(() => import('./tabs/roles/RolesPermissions'))
+const ConfigurationSysteme = lazy(() => import('./tabs/configuration/ConfigurationSysteme'))
+const LogsAudit = lazy(() => import('./tabs/logs/LogsAudit'))
 
 export default function AdministrationModule() {
   const [searchParams] = useSearchParams()
@@ -27,15 +31,35 @@ export default function AdministrationModule() {
       case 'dashboard':
         return <AdministrationDashboard />
       case 'referentiels':
-        return <Referentiels />
+        return (
+          <Suspense fallback={<LoadingState message="Chargement..." />}>
+            <Referentiels />
+          </Suspense>
+        )
       case 'utilisateurs':
-        return <UtilisateursListe />
+        return (
+          <Suspense fallback={<LoadingState message="Chargement..." />}>
+            <UtilisateursListe />
+          </Suspense>
+        )
       case 'roles':
-        return <RolesPermissions />
+        return (
+          <Suspense fallback={<LoadingState message="Chargement..." />}>
+            <RolesPermissions />
+          </Suspense>
+        )
       case 'configuration':
-        return <ConfigurationSysteme />
+        return (
+          <Suspense fallback={<LoadingState message="Chargement..." />}>
+            <ConfigurationSysteme />
+          </Suspense>
+        )
       case 'logs':
-        return <LogsAudit />
+        return (
+          <Suspense fallback={<LoadingState message="Chargement..." />}>
+            <LogsAudit />
+          </Suspense>
+        )
       default:
         return <EmptyState icon="Settings" title={`Onglet ${activeTab}`} message="À implémenter" />
     }
