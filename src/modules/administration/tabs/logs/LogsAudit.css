@@ -1,0 +1,100 @@
+.logs-audit {
+  padding: 24px;
+}
+
+.logs-audit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.logs-audit-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.filters-section {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.logs-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.table-name {
+  font-family: monospace;
+  font-size: 12px;
+  background: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: #111827;
+}
+
+.action-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.action-badge[data-action='INSERT'] {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.action-badge[data-action='UPDATE'] {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.action-badge[data-action='DELETE'] {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.action-badge[data-action='VIEW'] {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+@media (max-width: 768px) {
+  .logs-audit {
+    padding: 16px;
+  }
+
+  .logs-audit-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

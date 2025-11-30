@@ -1,6 +1,8 @@
-# Logs
-logs
+# Logs (fichiers de logs uniquement, pas les dossiers logs/ dans le code)
 *.log
+!/src/**/logs/**/*.jsx
+!/src/**/logs/**/*.js
+!/src/**/logs/**/*.css
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
