@@ -1,0 +1,34 @@
+.pipeline-kanban {
+  padding: var(--spacing-xl) 0;
+}
+
+.pipeline-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
+}
+
+.pipeline-column {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+}
+
+.pipeline-column h3 {
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+}
+
+.pipeline-items {
+  min-height: 200px;
+}
+
+.pipeline-empty {
+  text-align: center;
+  color: var(--text-tertiary);
+  padding: var(--spacing-xl);
+}
+

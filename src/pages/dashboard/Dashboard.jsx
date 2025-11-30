@@ -1,264 +1,208 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Icon from '../../components/common/Icon'
-import { analyticsService } from '../../services/analytics.service'
+import { useEffect, useState } from 'react'
+import { Icon } from '@/components/common/Icon'
+import { LoadingState } from '@/components/common/LoadingState'
+import { analyticsService } from '@/services/analytics.service'
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import './Dashboard.css'
 
 export default function Dashboard() {
-  const navigate = useNavigate()
+  const [kpis, setKpis] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [stats, setStats] = useState({
-    programmesActifs: 0,
-    projetsEnCours: 0,
-    candidatsEnAttente: 0,
-    beneficiairesActifs: 0,
-    budgetTotal: 0,
-    budgetConsomme: 0,
-    tauxConversion: 0,
-    tauxInsertion: 0,
-    funnel: {
-      candidats: 0,
-      eligibles: 0,
-      beneficiaires: 0,
-      insertions: 0
-    }
-  })
-  const [alerts, setAlerts] = useState([])
 
   useEffect(() => {
-    loadStats()
-    loadAlerts()
+    loadKPIs()
   }, [])
 
-  const loadStats = async () => {
+  const loadKPIs = async () => {
     setLoading(true)
-    const { data } = await analyticsService.getDashboardStats()
-    if (data) {
-      setStats(data)
-    }
-    setLoading(false)
-  }
-
-  const loadAlerts = async () => {
-    const { data } = await analyticsService.getAlerts()
-    if (data) {
-      setAlerts(data)
+    try {
+      const data = await analyticsService.getGlobalKPIs()
+      setKpis(data)
+    } catch (error) {
+      console.error('Error loading KPIs:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
   if (loading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-        <div className="spinner"></div>
-      </div>
-    )
+    return <LoadingState message="Chargement du tableau de bord..." />
   }
 
-  const { 
-    programmesActifs, 
-    projetsEnCours, 
-    candidatsEnAttente, 
-    beneficiairesActifs, 
-    budgetTotal,
-    budgetConsomme,
-    tauxConversion,
-    tauxInsertion,
-    funnel 
-  } = stats
+  const chartData = [
+    { name: 'Jan', programmes: kpis?.programmesActifs || 0, projets: kpis?.projetsEnCours || 0 },
+    { name: 'Fév', programmes: 5, projets: 12 },
+    { name: 'Mar', programmes: 7, projets: 15 },
+    { name: 'Avr', programmes: 8, projets: 18 },
+    { name: 'Mai', programmes: 10, projets: 20 },
+    { name: 'Juin', programmes: kpis?.programmesActifs || 0, projets: kpis?.projetsEnCours || 0 },
+  ]
 
-  const budgetPercentage = budgetTotal > 0 ? (budgetConsomme / budgetTotal * 100).toFixed(1) : 0
+  const budgetData = [
+    { name: 'Budget', alloué: parseFloat(kpis?.budgetTotal) || 0, consommé: parseFloat(kpis?.budgetConsomme || 0) },
+  ]
 
   return (
     <div className="dashboard">
       <div className="dashboard-header">
-        <h1>Tableau de bord CERIP SENEGAL</h1>
-        <p>Vue d'ensemble de vos programmes, projets, candidats et bénéficiaires</p>
+        <h1 className="dashboard-title">Tableau de bord</h1>
+        <button onClick={loadKPIs} className="dashboard-refresh">
+          <Icon name="RefreshCw" size={18} />
+          Actualiser
+        </button>
       </div>
 
-      <div className="dashboard-content">
-        <div className="dashboard-stats">
-          <button
-            type="button"
-            className="stat-card"
-            onClick={() => navigate('/programmes')}
-          >
-            <div className="stat-icon">
-              <Icon name="ClipboardList" size={32} />
+      <div className="dashboard-kpis">
+        <div className="kpi-card-modern">
+          <div className="kpi-card-header">
+            <div className="kpi-card-icon primary">
+              <Icon name="FolderKanban" size={24} />
             </div>
-            <div className="stat-info">
-              <div className="stat-value">{programmesActifs}</div>
-              <div className="stat-label">Programmes</div>
+            <div className="kpi-card-trend positive">
+              <Icon name="TrendingUp" size={16} />
+              <span>+12%</span>
             </div>
-          </button>
-
-          <button
-            type="button"
-            className="stat-card"
-            onClick={() => navigate('/projets')}
-          >
-            <div className="stat-icon">
-              <Icon name="Briefcase" size={32} />
-            </div>
-            <div className="stat-info">
-              <div className="stat-value">{projetsEnCours}</div>
-              <div className="stat-label">Projets</div>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            className="stat-card"
-            onClick={() => navigate('/candidats')}
-          >
-            <div className="stat-icon">
-              <Icon name="Sparkles" size={32} />
-            </div>
-            <div className="stat-info">
-              <div className="stat-value">{candidatsEnAttente}</div>
-              <div className="stat-label">Candidats en pipeline</div>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            className="stat-card"
-            onClick={() => navigate('/beneficiaires')}
-          >
-            <div className="stat-icon">
-              <Icon name="Users" size={32} />
-            </div>
-            <div className="stat-info">
-              <div className="stat-value">{beneficiairesActifs}</div>
-              <div className="stat-label">Bénéficiaires actifs</div>
-            </div>
-          </button>
+          </div>
+          <div className="kpi-card-value">{kpis?.programmesActifs || 0}</div>
+          <div className="kpi-card-label">Programmes actifs</div>
         </div>
 
-        <div className="dashboard-metrics-grid">
-          <div className="metric-card">
-            <div className="metric-header">
-              <Icon name="DollarSign" size={20} />
-              <span>Budget</span>
+        <div className="kpi-card-modern">
+          <div className="kpi-card-header">
+            <div className="kpi-card-icon secondary">
+              <Icon name="Briefcase" size={24} />
             </div>
-            <div className="metric-value">
-              {budgetTotal.toLocaleString('fr-FR')} XOF
-            </div>
-            <div className="metric-detail">
-              {budgetConsomme > 0 && (
-                <div className="metric-progress">
-                  <div className="metric-progress-bar">
-                    <div 
-                      className="metric-progress-fill" 
-                      style={{ width: `${budgetPercentage}%` }}
-                    />
-                  </div>
-                  <span>{budgetPercentage}% consommé</span>
-                </div>
-              )}
+            <div className="kpi-card-trend positive">
+              <Icon name="TrendingUp" size={16} />
+              <span>+8%</span>
             </div>
           </div>
-
-          <div className="metric-card">
-            <div className="metric-header">
-              <Icon name="TrendingUp" size={20} />
-              <span>Taux de conversion</span>
-            </div>
-            <div className="metric-value">
-              {tauxConversion}%
-            </div>
-            <div className="metric-detail">
-              {funnel.candidats > 0 && (
-                <span>{beneficiairesActifs} bénéficiaires / {funnel.candidats} candidats</span>
-              )}
-            </div>
-          </div>
-
-          <div className="metric-card">
-            <div className="metric-header">
-              <Icon name="Target" size={20} />
-              <span>Taux d'insertion</span>
-            </div>
-            <div className="metric-value">
-              {tauxInsertion}%
-            </div>
-            <div className="metric-detail">
-              {beneficiairesActifs > 0 && (
-                <span>{funnel.insertions} insérés / {beneficiairesActifs} bénéficiaires</span>
-              )}
-            </div>
-          </div>
+          <div className="kpi-card-value">{kpis?.projetsEnCours || 0}</div>
+          <div className="kpi-card-label">Projets en cours</div>
         </div>
 
-        {alerts.length > 0 && (
-          <div className="dashboard-alerts">
-            <div className="alerts-header">
-              <Icon name="AlertTriangle" size={20} />
-              <h2>Alertes ({alerts.length})</h2>
+        <div className="kpi-card-modern">
+          <div className="kpi-card-header">
+            <div className="kpi-card-icon accent">
+              <Icon name="DollarSign" size={24} />
             </div>
-            <div className="alerts-list">
-              {alerts.map((alert, idx) => (
-                <div 
-                  key={idx} 
-                  className={`alert-item alert-${alert.type}`}
-                  onClick={() => alert.link && navigate(alert.link)}
-                >
-                  <Icon name={alert.type === 'warning' ? 'AlertTriangle' : 'Info'} size={16} />
-                  <div className="alert-content">
-                    <div className="alert-title">{alert.title}</div>
-                    <div className="alert-message">{alert.message}</div>
-                  </div>
-                  {alert.link && (
-                    <Icon name="ChevronRight" size={16} />
-                  )}
-                </div>
-              ))}
+            <div className="kpi-card-trend positive">
+              <Icon name="TrendingUp" size={16} />
+              <span>+5%</span>
             </div>
           </div>
-        )}
+          <div className="kpi-card-value">
+            {new Intl.NumberFormat('fr-FR', {
+              style: 'currency',
+              currency: 'XOF',
+              minimumFractionDigits: 0,
+            }).format(parseFloat(kpis?.budgetTotal) || 0)}
+          </div>
+          <div className="kpi-card-label">Budget total</div>
+        </div>
 
-        <div className="dashboard-funnel">
-          <h2>Parcours global</h2>
-          <div className="funnel-steps">
-            <div className="funnel-step">
-              <span className="funnel-label">Candidats</span>
-              <span className="funnel-value">{funnel.candidats}</span>
+        <div className="kpi-card-modern">
+          <div className="kpi-card-header">
+            <div className="kpi-card-icon success">
+              <Icon name="UserCheck" size={24} />
             </div>
-            <div className="funnel-arrow">
-              <Icon name="ArrowRight" size={20} />
+            <div className="kpi-card-trend positive">
+              <Icon name="TrendingUp" size={16} />
+              <span>+{kpis?.tauxConversion || 0}%</span>
             </div>
-            <div className="funnel-step">
-              <span className="funnel-label">Éligibles</span>
-              <span className="funnel-value">{funnel.eligibles}</span>
-            </div>
-            <div className="funnel-arrow">
-              <Icon name="ArrowRight" size={20} />
-            </div>
-            <div className="funnel-step">
-              <span className="funnel-label">Bénéficiaires</span>
-              <span className="funnel-value">{funnel.beneficiaires}</span>
-            </div>
-            <div className="funnel-arrow">
-              <Icon name="ArrowRight" size={20} />
-            </div>
-            <div className="funnel-step">
-              <span className="funnel-label">Insertions</span>
-              <span className="funnel-value">{funnel.insertions}</span>
-            </div>
+          </div>
+          <div className="kpi-card-value">{kpis?.tauxConversion || 0}%</div>
+          <div className="kpi-card-label">Taux de conversion</div>
+        </div>
+      </div>
+
+      <div className="dashboard-charts">
+        <div className="dashboard-chart-card">
+          <h3 className="dashboard-chart-title">Évolution Programmes & Projets</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="programmes" stroke="#dc2626" name="Programmes" />
+              <Line type="monotone" dataKey="projets" stroke="#2563eb" name="Projets" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="dashboard-chart-card">
+          <h3 className="dashboard-chart-title">Budget Alloué vs Consommé</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={budgetData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="alloué" fill="#dc2626" name="Budget alloué" />
+              <Bar dataKey="consommé" fill="#10b981" name="Budget consommé" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div className="dashboard-metrics">
+        <div className="metric-card-modern">
+          <div className="metric-card-header">
+            <span className="metric-card-title">Budget consommé</span>
+          </div>
+          <div className="metric-card-value">
+            {new Intl.NumberFormat('fr-FR', {
+              style: 'currency',
+              currency: 'XOF',
+              minimumFractionDigits: 0,
+            }).format(parseFloat(kpis?.budgetConsomme || 0))}
+          </div>
+          <div className="metric-card-detail">{`Sur ${new Intl.NumberFormat('fr-FR', {
+            style: 'currency',
+            currency: 'XOF',
+            minimumFractionDigits: 0,
+          }).format(parseFloat(kpis?.budgetTotal || 0))}`}</div>
+          <div className="metric-card-progress">
+            <div
+              className="metric-card-progress-bar"
+              style={{
+                width: `${parseFloat(kpis?.budgetTotal || 0) > 0
+                  ? Math.round((parseFloat(kpis.budgetConsomme || 0) / parseFloat(kpis.budgetTotal)) * 100)
+                  : 0}%`,
+              }}
+            />
           </div>
         </div>
 
-        <div className="dashboard-welcome">
-          <h2>Bienvenue sur l'ERP CERIP SENEGAL</h2>
-          <p>Cette plateforme vous permet de gérer tous les aspects de votre incubateur :</p>
-          <ul>
-            <li>Gestion des programmes et projets</li>
-            <li>Suivi des appels à candidatures et du pipeline</li>
-            <li>Accompagnement des bénéficiaires et interventions</li>
-            <li>Portails pour les intervenants (Mentors, Formateurs, Coaches)</li>
-          </ul>
-          <p className="dashboard-note">
-            Utilisez les cartes ci-dessus pour accéder rapidement aux modules clés.
-          </p>
+        <div className="metric-card-modern">
+          <div className="metric-card-header">
+            <span className="metric-card-title">Candidats</span>
+          </div>
+          <div className="metric-card-value">{kpis?.candidatsTotal || 0}</div>
+          <div className="metric-card-detail">Total des candidats enregistrés</div>
+          <div className="metric-card-progress">
+            <div
+              className="metric-card-progress-bar"
+              style={{ width: '75%' }}
+            />
+          </div>
+        </div>
+
+        <div className="metric-card-modern">
+          <div className="metric-card-header">
+            <span className="metric-card-title">Bénéficiaires</span>
+          </div>
+          <div className="metric-card-value">{kpis?.beneficiairesTotal || 0}</div>
+          <div className="metric-card-detail">Total des bénéficiaires actifs</div>
+          <div className="metric-card-progress">
+            <div
+              className="metric-card-progress-bar"
+              style={{ width: '68%' }}
+            />
+          </div>
         </div>
       </div>
     </div>

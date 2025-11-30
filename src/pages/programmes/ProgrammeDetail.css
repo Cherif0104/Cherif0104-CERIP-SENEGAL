@@ -1,0 +1,128 @@
+.programme-detail {
+  padding: 24px;
+}
+
+.programme-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.programme-detail-title {
+  flex: 1;
+}
+
+.programme-detail-title h1 {
+  margin: 0 0 4px 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.programme-detail-id {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.programme-detail-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 24px;
+}
+
+.programme-detail-tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: all 0.2s;
+  margin-bottom: -2px;
+}
+
+.programme-detail-tab:hover {
+  color: var(--color-primary);
+}
+
+.programme-detail-tab.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.programme-detail-content {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.programme-detail-section {
+  margin-bottom: 32px;
+}
+
+.programme-detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.programme-detail-section h2 {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.programme-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.programme-detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.programme-detail-field label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.programme-detail-field span {
+  font-size: 16px;
+  color: var(--color-text-primary);
+}
+
+.programme-detail-projets {
+  padding: 24px;
+}
+
+.projets-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.projets-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.programme-detail-error {
+  padding: 40px;
+  text-align: center;
+}
+
+.programme-detail-error h2 {
+  margin-bottom: 16px;
+  color: var(--color-text-primary);
+}

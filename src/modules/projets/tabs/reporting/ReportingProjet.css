@@ -1,0 +1,57 @@
+.reporting-projet {
+  padding: 24px;
+}
+
+.reporting-header {
+  margin-bottom: 24px;
+}
+
+.reporting-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.reporting-content {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.rapports-actions {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.rapports-filters {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.rapports-info {
+  margin-top: 24px;
+  padding: 16px;
+  background: #eff6ff;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+}
+
+.rapports-info p {
+  margin: 8px 0;
+  color: var(--color-text-primary);
+}
+
+.info-text {
+  font-size: 14px;
+  color: var(--color-text-secondary) !important;
+}
+

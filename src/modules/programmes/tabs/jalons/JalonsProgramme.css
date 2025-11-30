@@ -1,0 +1,33 @@
+.jalons-programme {
+  padding: 24px;
+}
+
+.jalons-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.jalons-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.jalons-filters {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.jalons-content {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+

@@ -1,0 +1,98 @@
+.risques-projet {
+  padding: 24px;
+}
+
+.risques-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.risques-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.risques-matrix {
+  margin-bottom: 24px;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.risques-table {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.risk-score {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.risk-score.risk-critical {
+  color: #ef4444;
+}
+
+.risk-score.risk-high {
+  color: #f59e0b;
+}
+
+.risk-score.risk-medium {
+  color: #3b82f6;
+}
+
+.risk-score.risk-low {
+  color: #10b981;
+}
+
+.risk-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.risk-badge.risk-critical {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.risk-badge.risk-high {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.risk-badge.risk-medium {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.risk-badge.risk-low {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.risk-details {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.risk-tag {
+  padding: 4px 8px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+

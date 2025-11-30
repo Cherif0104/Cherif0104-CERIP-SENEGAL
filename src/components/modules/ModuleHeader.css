@@ -1,0 +1,6 @@
+.module-header-custom-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+

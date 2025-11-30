@@ -1,0 +1,287 @@
+.gestion-temps {
+  padding: var(--spacing-xl);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.gestion-temps-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.gestion-temps-header h1 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.gestion-temps-content {
+  margin-top: var(--spacing-xl);
+}
+
+.overview-tab {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.overview-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.temps-recent h2 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.temps-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.temps-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.temps-date {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.temps-details {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.temps-activite {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.temps-heures {
+  font-weight: var(--font-weight-semibold);
+  color: var(--cerip-blue);
+}
+
+.temps-table {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.temps-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.temps-table thead {
+  background: var(--bg-secondary);
+}
+
+.temps-table th {
+  padding: var(--spacing-md);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.temps-table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.temps-table tbody tr:hover {
+  background: var(--bg-secondary);
+}
+
+.statut-badge {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.statut-badge.statut-saisi {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--cerip-blue);
+}
+
+.statut-badge.statut-valide {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--success);
+}
+
+.statut-badge.statut-refuse {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+}
+
+.planning-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.planning-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.planning-date {
+  min-width: 120px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.planning-details {
+  flex: 1;
+}
+
+.planning-details h3 {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.planning-details p {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.planning-statut {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.planning-statut.statut-planifie {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--cerip-blue);
+}
+
+.planning-statut.statut-confirme {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--success);
+}
+
+.planning-statut.statut-realise {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--success);
+}
+
+.absences-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.absence-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.absence-type {
+  min-width: 150px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.absence-dates {
+  flex: 1;
+  color: var(--text-secondary);
+}
+
+.absence-days {
+  margin-left: var(--spacing-sm);
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+}
+
+.absence-statut {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.absence-statut.statut-demande {
+  background: rgba(251, 191, 36, 0.1);
+  color: var(--warning);
+}
+
+.absence-statut.statut-approuve {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--success);
+}
+
+.absence-statut.statut-refuse {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+}
+
+@media (max-width: 768px) {
+  .gestion-temps {
+    padding: var(--spacing-md);
+  }
+
+  .gestion-temps-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .overview-kpis {
+    grid-template-columns: 1fr;
+  }
+
+  .temps-table {
+    overflow-x: auto;
+  }
+
+  .planning-item,
+  .absence-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

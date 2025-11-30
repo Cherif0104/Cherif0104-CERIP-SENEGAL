@@ -1,0 +1,83 @@
+.budgets-programme {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.budgets-header h2 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.budgets-summary {
+  margin-bottom: var(--spacing-lg);
+}
+
+.budgets-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.budgets-table thead {
+  background: var(--bg-secondary);
+}
+
+.budgets-table th {
+  padding: var(--spacing-md);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.budgets-table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.budgets-table tbody tr:hover {
+  background: var(--bg-secondary);
+}
+
+.progress-bar-container {
+  position: relative;
+  width: 100%;
+  height: 24px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--cerip-blue);
+  transition: width 0.3s ease;
+}
+
+.progress-bar.warning {
+  background: var(--warning);
+}
+
+.progress-bar.critical {
+  background: var(--error);
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  z-index: 1;
+}
+

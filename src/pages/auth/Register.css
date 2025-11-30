@@ -1,0 +1,75 @@
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--cerip-red), var(--cerip-red-dark));
+  padding: var(--spacing-xl);
+}
+
+.register-container {
+  width: 100%;
+  max-width: 520px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-3xl);
+  box-shadow: var(--shadow-xl);
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: var(--spacing-3xl);
+}
+
+.register-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--cerip-red);
+  margin-bottom: var(--spacing-sm);
+}
+
+.register-subtitle {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+}
+
+.register-form {
+  margin-bottom: var(--spacing-xl);
+}
+
+.register-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.register-error {
+  padding: var(--spacing-md);
+  background: var(--error-light);
+  color: var(--error);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+}
+
+.register-submit {
+  width: 100%;
+  margin-top: var(--spacing-lg);
+}
+
+.register-footer {
+  text-align: center;
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--border-color);
+}
+
+.register-link {
+  color: var(--cerip-red);
+  font-weight: var(--font-weight-medium);
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
+

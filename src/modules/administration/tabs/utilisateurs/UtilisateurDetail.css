@@ -1,0 +1,166 @@
+.utilisateur-detail {
+  padding: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.utilisateur-detail-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  text-align: center;
+}
+
+.utilisateur-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e5e7eb;
+  flex-wrap: wrap;
+}
+
+.utilisateur-detail-title {
+  flex: 1;
+  min-width: 200px;
+}
+
+.utilisateur-detail-title h1 {
+  margin: 0 0 4px 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.utilisateur-detail-email {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.utilisateur-detail-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.utilisateur-detail-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.utilisateur-detail-section {
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.utilisateur-detail-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.utilisateur-detail-section h2 {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.utilisateur-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.utilisateur-detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.utilisateur-detail-field label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.utilisateur-detail-field span {
+  font-size: 14px;
+  color: #111827;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  width: fit-content;
+}
+
+.statut-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.statut-badge.statut-actif {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.statut-badge.statut-inactif {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.actions-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .utilisateur-detail {
+    padding: 16px;
+  }
+
+  .utilisateur-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .utilisateur-detail-actions {
+    width: 100%;
+  }
+
+  .utilisateur-detail-actions button {
+    flex: 1;
+  }
+
+  .utilisateur-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions-buttons {
+    flex-direction: column;
+  }
+
+  .actions-buttons button {
+    width: 100%;
+  }
+}
+

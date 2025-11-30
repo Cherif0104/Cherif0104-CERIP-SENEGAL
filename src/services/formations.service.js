@@ -1,191 +1,193 @@
-// Service de gestion des formations avec Supabase
-import { supabase } from '../lib/supabase'
+import { supabase } from '@/lib/supabase'
+import { logger } from '@/utils/logger'
 
-const TABLE = 'formations'
-const TABLE_SESSIONS = 'sessions_formation'
-const TABLE_INSCRIPTIONS = 'inscriptions_formations'
-const TABLE_PARTICIPATIONS = 'participations_formation'
-
+/**
+ * Service Formations - Gestion des formations
+ */
 export const formationsService = {
-  async getAll(filters = {}) {
+  /**
+   * Récupérer toutes les formations
+   */
+  async getAll(options = {}) {
+    logger.debug('FORMATIONS_SERVICE', 'getAll appelé', { options })
     try {
-      let query = supabase.from(TABLE).select('*').order('date_debut', { ascending: false })
+      let query = supabase
+        .from('formations')
+        .select('*, formateurs:formateur_id(id, nom, prenom, email), sessions_formations(*)')
 
-      if (filters.statut) {
-        query = query.eq('statut', filters.statut)
-      }
-      if (filters.projet_id) {
-        query = query.eq('projet_id', filters.projet_id)
-      }
-      if (filters.formateur_id) {
-        query = query.eq('formateur_id', filters.formateur_id)
+      if (options.filters) {
+        Object.entries(options.filters).forEach(([key, value]) => {
+          query = query.eq(key, value)
+        })
       }
 
-      const { data, error } = await query
+      if (options.pagination) {
+        const { page = 1, pageSize = 20 } = options.pagination
+        const from = (page - 1) * pageSize
+        const to = from + pageSize - 1
+        query = query.range(from, to)
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false })
 
       if (error) {
-        return { data: [], error }
+        logger.error('FORMATIONS_SERVICE', 'Erreur getAll', error)
+        throw error
       }
 
-      let filtered = data || []
-
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase()
-        filtered = filtered.filter(f =>
-          f.nom?.toLowerCase().includes(searchLower) ||
-          f.description?.toLowerCase().includes(searchLower) ||
-          f.lieu?.toLowerCase().includes(searchLower)
-        )
-      }
-
-      return { data: filtered, error: null }
-    } catch (error) {
-      console.error('Error fetching formations:', error)
-      return { data: [], error }
-    }
-  },
-
-  async getById(id) {
-    try {
-      const { data, error } = await supabase
-        .from(TABLE)
-        .select('*')
-        .eq('id', id)
-        .single()
-
-      if (error) {
-        return { data: null, error }
-      }
-
+      logger.debug('FORMATIONS_SERVICE', `getAll réussi: ${data?.length || 0} formations`)
       return { data, error: null }
     } catch (error) {
-      console.error('Error fetching formation:', error)
+      logger.error('FORMATIONS_SERVICE', 'Erreur globale getAll', error)
       return { data: null, error }
     }
   },
 
-  async create(formation) {
+  /**
+   * Récupérer une formation par ID
+   */
+  async getById(id) {
+    logger.debug('FORMATIONS_SERVICE', 'getById appelé', { id })
     try {
-      const formationData = {
-        nom: formation.nom,
-        description: formation.description || null,
-        projet_id: formation.projet_id || null,
-        formateur_id: formation.formateur_id || null,
-        date_debut: formation.date_debut || null,
-        date_fin: formation.date_fin || null,
-        duree_heures: formation.duree_heures || null,
-        statut: formation.statut || 'OUVERT',
-        capacite_max: formation.capacite_max || null,
-        lieu: formation.lieu || null,
-        modalite: formation.modalite || 'PRESENTIEL',
-        cout: formation.cout || null,
-        objectifs: formation.objectifs || null,
-        programme: formation.programme || null
+      const { data, error } = await supabase
+        .from('formations')
+        .select('*, formateurs:formateur_id(id, nom, prenom, email), sessions_formations(*, participations_formation(*))')
+        .eq('id', id)
+        .single()
+
+      if (error) {
+        logger.error('FORMATIONS_SERVICE', 'Erreur getById', { id, error })
+        throw error
       }
 
+      logger.debug('FORMATIONS_SERVICE', 'getById réussi', { id })
+      return { data, error: null }
+    } catch (error) {
+      logger.error('FORMATIONS_SERVICE', 'Erreur globale getById', { id, error })
+      return { data: null, error }
+    }
+  },
+
+  /**
+   * Créer une formation
+   */
+  async create(formationData) {
+    logger.debug('FORMATIONS_SERVICE', 'create appelé', formationData)
+    try {
       const { data, error } = await supabase
-        .from(TABLE)
+        .from('formations')
         .insert(formationData)
-        .select('*')
+        .select()
         .single()
 
-      return { data, error }
-    } catch (error) {
-      console.error('Error creating formation:', error)
-      return { data: null, error }
-    }
-  },
-
-  async update(id, formation) {
-    try {
-      const updateData = {
-        nom: formation.nom,
-        description: formation.description || null,
-        projet_id: formation.projet_id || null,
-        formateur_id: formation.formateur_id || null,
-        date_debut: formation.date_debut || null,
-        date_fin: formation.date_fin || null,
-        duree_heures: formation.duree_heures || null,
-        statut: formation.statut,
-        capacite_max: formation.capacite_max || null,
-        lieu: formation.lieu || null,
-        modalite: formation.modalite || 'PRESENTIEL',
-        cout: formation.cout || null,
-        objectifs: formation.objectifs || null,
-        programme: formation.programme || null
+      if (error) {
+        logger.error('FORMATIONS_SERVICE', 'Erreur create', error)
+        throw error
       }
 
+      logger.info('FORMATIONS_SERVICE', 'Formation créée avec succès', { id: data.id })
+      return { data, error: null }
+    } catch (error) {
+      logger.error('FORMATIONS_SERVICE', 'Erreur globale create', error)
+      return { data: null, error }
+    }
+  },
+
+  /**
+   * Mettre à jour une formation
+   */
+  async update(id, formationData) {
+    logger.debug('FORMATIONS_SERVICE', 'update appelé', { id, formationData })
+    try {
       const { data, error } = await supabase
-        .from(TABLE)
-        .update(updateData)
+        .from('formations')
+        .update(formationData)
         .eq('id', id)
-        .select('*')
+        .select()
         .single()
 
-      return { data, error }
+      if (error) {
+        logger.error('FORMATIONS_SERVICE', 'Erreur update', { id, error })
+        throw error
+      }
+
+      logger.info('FORMATIONS_SERVICE', 'Formation mise à jour avec succès', { id })
+      return { data, error: null }
     } catch (error) {
-      console.error('Error updating formation:', error)
+      logger.error('FORMATIONS_SERVICE', 'Erreur globale update', { id, error })
       return { data: null, error }
     }
   },
 
-  async delete(id) {
-    try {
-      const { error } = await supabase
-        .from(TABLE)
-        .delete()
-        .eq('id', id)
-
-      return { data: { id }, error }
-    } catch (error) {
-      console.error('Error deleting formation:', error)
-      return { data: null, error }
-    }
+  /**
+   * Récupérer les formations actives
+   */
+  async getActives() {
+    return await this.getAll({
+      filters: { statut: 'OUVERT' },
+    })
   },
 
+  /**
+   * Récupérer les sessions d'une formation
+   */
   async getSessions(formationId) {
     try {
       const { data, error } = await supabase
-        .from(TABLE_SESSIONS)
-        .select('*')
+        .from('sessions_formations')
+        .select('*, participations_formation(*)')
         .eq('formation_id', formationId)
-        .order('date_session', { ascending: true })
+        .order('date_debut', { ascending: true })
 
-      return { data: data || [], error }
+      if (error) throw error
+
+      return { data, error: null }
     } catch (error) {
-      console.error('Error fetching sessions:', error)
-      return { data: [], error }
+      logger.error('FORMATIONS_SERVICE', 'Erreur getSessions', error)
+      return { data: null, error }
     }
   },
 
-  async getInscriptions(formationId) {
+  /**
+   * Inscrire un bénéficiaire à une formation
+   */
+  async inscrireBeneficiaire(formationId, beneficiaireId, sessionId = null) {
     try {
-      const { data, error } = await supabase
-        .from(TABLE_INSCRIPTIONS)
-        .select('*')
-        .eq('formation_id', formationId)
-        .order('date_inscription', { ascending: false })
+      const inscriptionData = {
+        formation_id: formationId,
+        beneficiaire_id: beneficiaireId,
+        statut: 'INSCRIT',
+      }
 
-      return { data: data || [], error }
+      if (sessionId) {
+        // Utiliser participations_formation si session spécifiée
+        const { data, error } = await supabase
+          .from('participations_formation')
+          .insert({
+            session_id: sessionId,
+            beneficiaire_id: beneficiaireId,
+            statut: 'INSCRIT',
+          })
+          .select()
+          .single()
+
+        if (error) throw error
+        return { data, error: null }
+      } else {
+        // Utiliser inscriptions_formations
+        const { data, error } = await supabase
+          .from('inscriptions_formations')
+          .insert(inscriptionData)
+          .select()
+          .single()
+
+        if (error) throw error
+        return { data, error: null }
+      }
     } catch (error) {
-      console.error('Error fetching inscriptions:', error)
-      return { data: [], error }
+      logger.error('FORMATIONS_SERVICE', 'Erreur inscrireBeneficiaire', error)
+      return { data: null, error }
     }
   },
-
-  async getParticipations(formationId) {
-    try {
-      const { data, error } = await supabase
-        .from(TABLE_PARTICIPATIONS)
-        .select('*')
-        .eq('formation_id', formationId)
-        .order('date_participation', { ascending: false })
-
-      return { data: data || [], error }
-    } catch (error) {
-      console.error('Error fetching participations:', error)
-      return { data: [], error }
-    }
-  }
 }
 

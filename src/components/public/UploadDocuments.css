@@ -1,0 +1,146 @@
+.upload-documents {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.required-docs-info {
+  padding: var(--spacing-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--cerip-blue);
+}
+
+.required-docs-info h4 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.required-docs-info ul {
+  margin: 0;
+  padding-left: var(--spacing-lg);
+  color: var(--text-secondary);
+}
+
+.upload-dropzone {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
+  text-align: center;
+  background: var(--bg-secondary);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.upload-dropzone:hover,
+.upload-dropzone.drag-active {
+  border-color: var(--cerip-blue);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.upload-dropzone.drag-active {
+  border-style: solid;
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  cursor: pointer;
+}
+
+.upload-label svg {
+  color: var(--cerip-blue);
+}
+
+.upload-label p {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.upload-label .upload-hint {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.uploaded-files {
+  margin-top: var(--spacing-md);
+}
+
+.uploaded-files h4 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.files-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+}
+
+.file-info svg {
+  color: var(--cerip-blue);
+}
+
+.file-info div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.file-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.file-size {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.remove-file-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  color: var(--error);
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.remove-file-btn:hover {
+  color: var(--error);
+  opacity: 0.8;
+}
+

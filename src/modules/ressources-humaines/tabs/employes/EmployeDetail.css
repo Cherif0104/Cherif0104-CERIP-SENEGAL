@@ -1,0 +1,276 @@
+.employe-detail {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.employe-detail-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  text-align: center;
+}
+
+.employe-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.employe-detail-title {
+  flex: 1;
+}
+
+.employe-detail-title h1 {
+  margin: 0 0 4px 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.employe-detail-matricule {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.employe-detail-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.employe-detail-tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  transition: all 0.2s;
+}
+
+.employe-detail-tab:hover {
+  color: #111827;
+}
+
+.employe-detail-tab.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+}
+
+.employe-detail-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.employe-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.employe-detail-section {
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.employe-detail-section:last-child {
+  border-bottom: none;
+}
+
+.employe-detail-section h2 {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.employe-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.employe-detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.employe-detail-field label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.employe-detail-field span {
+  font-size: 14px;
+  color: #111827;
+}
+
+.statut-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.statut-badge.statut-actif {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.statut-badge.statut-inactif {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.statut-badge.statut-conge {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.statut-badge.statut-demission {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.statut-badge.statut-inconnu {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* Compétences */
+.employe-detail-competences h2,
+.employe-detail-evaluations h2 {
+  margin: 0 0 24px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.competences-list,
+.evaluations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.competence-item,
+.evaluation-item {
+  padding: 16px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.competence-header,
+.evaluation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.competence-header h3,
+.evaluation-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.competence-niveau {
+  padding: 4px 12px;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.competence-description,
+.competence-notes,
+.evaluation-commentaires {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.competence-meta,
+.evaluation-meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.evaluation-date {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.evaluation-note {
+  margin: 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.empty-state p {
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .employe-detail {
+    padding: 16px;
+  }
+
+  .employe-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .employe-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .employe-detail-tabs {
+    overflow-x: auto;
+  }
+
+  .competence-header,
+  .evaluation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+

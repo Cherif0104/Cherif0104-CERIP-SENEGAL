@@ -1,0 +1,275 @@
+.poste-detail {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.poste-detail-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  text-align: center;
+}
+
+.poste-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.poste-detail-title {
+  flex: 1;
+}
+
+.poste-detail-title h1 {
+  margin: 0 0 4px 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.poste-detail-code {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.poste-detail-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.poste-detail-tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  transition: all 0.2s;
+}
+
+.poste-detail-tab:hover {
+  color: #111827;
+}
+
+.poste-detail-tab.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+}
+
+.poste-detail-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.poste-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.poste-detail-section {
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.poste-detail-section:last-child {
+  border-bottom: none;
+}
+
+.poste-detail-section h2 {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.poste-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.poste-detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.poste-detail-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.poste-detail-field label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.poste-detail-field span {
+  font-size: 14px;
+  color: #111827;
+}
+
+.poste-description {
+  margin: 0;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.statut-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.statut-badge.statut-ouvert {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.statut-badge.statut-ferme {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.statut-badge.statut-suspendu {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.statut-badge.statut-inconnu {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.competences-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.competence-tag {
+  padding: 6px 12px;
+  background: #eff6ff;
+  color: #1e40af;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.note-info {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+/* Employés */
+.poste-detail-employes h2 {
+  margin: 0 0 24px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.employes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.employe-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.employe-item:hover {
+  background: #f3f4f6;
+  border-color: #3b82f6;
+}
+
+.employe-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.employe-info h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.employe-matricule {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.empty-state p {
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .poste-detail {
+    padding: 16px;
+  }
+
+  .poste-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .poste-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .poste-detail-tabs {
+    overflow-x: auto;
+  }
+}
+

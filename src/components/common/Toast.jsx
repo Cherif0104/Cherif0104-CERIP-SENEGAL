@@ -1,66 +1,100 @@
 import { useEffect, useState } from 'react'
-import { CheckCircle2, XCircle, Info, AlertTriangle, X } from 'lucide-react'
+import { Icon } from './Icon'
 import './Toast.css'
 
-export default function Toast({ toast, onClose }) {
-  const [isVisible, setIsVisible] = useState(false)
-  const [isLeaving, setIsLeaving] = useState(false)
+/**
+ * Toast - Composant pour afficher des notifications
+ * @param {Object} props
+ * @param {string} props.message - Message à afficher
+ * @param {string} props.type - Type de toast (success, error, warning, info)
+ * @param {number} props.duration - Durée d'affichage en ms (défaut: 3000)
+ * @param {Function} props.onClose - Callback appelé à la fermeture
+ */
+export function Toast({ message, type = 'info', duration = 3000, onClose }) {
+  const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
-    // Animation d'entrée
-    setTimeout(() => setIsVisible(true), 10)
-
-    // Auto-close si duration > 0
-    if (toast.duration > 0) {
+    if (duration > 0) {
       const timer = setTimeout(() => {
-        handleClose()
-      }, toast.duration)
+        setIsVisible(false)
+        setTimeout(() => onClose?.(), 300) // Attendre animation
+      }, duration)
 
       return () => clearTimeout(timer)
     }
-  }, [toast.duration])
+  }, [duration, onClose])
 
-  const handleClose = () => {
-    setIsLeaving(true)
-    setTimeout(() => {
-      onClose()
-    }, 300) // Durée de l'animation de sortie
-  }
+  if (!isVisible) return null
 
-  const getIcon = () => {
-    switch (toast.type) {
-      case 'success':
-        return <CheckCircle2 size={20} />
-      case 'error':
-        return <XCircle size={20} />
-      case 'warning':
-        return <AlertTriangle size={20} />
-      case 'info':
-      default:
-        return <Info size={20} />
-    }
+  const icons = {
+    success: 'CheckCircle',
+    error: 'XCircle',
+    warning: 'AlertTriangle',
+    info: 'Info',
   }
 
   return (
-    <div 
-      className={`toast toast--${toast.type} ${isVisible ? 'toast--visible' : ''} ${isLeaving ? 'toast--leaving' : ''}`}
-      role="alert"
-      aria-live="polite"
-    >
-      <div className="toast__icon">
-        {getIcon()}
-      </div>
-      <div className="toast__content">
-        <p className="toast__message">{toast.message}</p>
-      </div>
-      <button
-        className="toast__close"
-        onClick={handleClose}
-        aria-label="Fermer la notification"
-      >
-        <X size={16} />
+    <div className={`toast toast-${type} ${isVisible ? 'toast-visible' : ''}`}>
+      <Icon name={icons[type] || 'Info'} size={20} />
+      <span className="toast-message">{message}</span>
+      <button className="toast-close" onClick={() => setIsVisible(false)}>
+        <Icon name="X" size={16} />
       </button>
     </div>
   )
+}
+
+/**
+ * ToastContainer - Container pour gérer plusieurs toasts
+ */
+export function ToastContainer() {
+  const [toasts, setToasts] = useState([])
+
+  // Exposer fonction globale pour ajouter des toasts
+  useEffect(() => {
+    window.showToast = (message, type = 'info', duration = 3000) => {
+      const id = Date.now()
+      setToasts((prev) => [...prev, { id, message, type, duration }])
+      return id
+    }
+
+    return () => {
+      delete window.showToast
+    }
+  }, [])
+
+  const removeToast = (id) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id))
+  }
+
+  return (
+    <div className="toast-container">
+      {toasts.map((toast) => (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          onClose={() => removeToast(toast.id)}
+        />
+      ))}
+    </div>
+  )
+}
+
+// Helpers pour faciliter l'utilisation
+export const toast = {
+  success: (message, duration = 3000) => {
+    if (window.showToast) window.showToast(message, 'success', duration)
+  },
+  error: (message, duration = 5000) => {
+    if (window.showToast) window.showToast(message, 'error', duration)
+  },
+  warning: (message, duration = 4000) => {
+    if (window.showToast) window.showToast(message, 'warning', duration)
+  },
+  info: (message, duration = 3000) => {
+    if (window.showToast) window.showToast(message, 'info', duration)
+  },
 }
 

@@ -1,0 +1,87 @@
+.suivi-tab {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.tab-header h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-xl) 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.suivi-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+.insertions-section,
+.projets-section {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.insertions-section h3,
+.projets-section h3 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.suivi-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.suivi-table thead {
+  background: var(--bg-secondary);
+}
+
+.suivi-table th {
+  padding: var(--spacing-md);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border-color);
+  font-size: var(--font-size-sm);
+}
+
+.suivi-table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+}
+
+.suivi-table tbody tr:hover {
+  background: var(--bg-secondary);
+}
+
+.insertions-list,
+.projets-list {
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .suivi-table {
+    font-size: var(--font-size-xs);
+  }
+
+  .suivi-table th,
+  .suivi-table td {
+    padding: var(--spacing-sm);
+  }
+}
+

@@ -1,0 +1,42 @@
+.appels-projet {
+  padding: 24px;
+}
+
+.appels-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.appels-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.appels-filters {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.appels-info {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.appels-content {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
