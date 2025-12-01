@@ -1,12 +1,22 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { programmesService } from '@/services/programmes.service'
 import { projetsService } from '@/services/projets.service'
 import { auditService } from '@/services/audit.service'
 import { LoadingState } from '@/components/common/LoadingState'
+import { EmptyState } from '@/components/common/EmptyState'
 import { Button } from '@/components/common/Button'
 import { DataTable } from '@/components/common/DataTable'
-import { AuditTrail } from '@/components/audit/AuditTrail'
+import { TimelineHistory } from '@/components/audit/TimelineHistory'
+import { PermissionGuard } from '@/components/common/PermissionGuard'
+import { Icon } from '@/components/common/Icon'
+import ProgrammeDashboardDetail from '@/modules/programmes/tabs/dashboard/ProgrammeDashboardDetail'
+import DepensesProgramme from '@/modules/programmes/tabs/depenses/DepensesProgramme'
+import RisquesProgramme from '@/modules/programmes/tabs/risques/RisquesProgramme'
+import JalonsProgramme from '@/modules/programmes/tabs/jalons/JalonsProgramme'
+import ReportingProgramme from '@/modules/programmes/tabs/reporting/ReportingProgramme'
+import ProgrammeCandidats from './tabs/ProgrammeCandidats'
+import ProgrammeBeneficiaires from './tabs/ProgrammeBeneficiaires'
 import { formatDate, formatCurrency } from '@/utils/format'
 import { toast } from '@/components/common/Toast'
 import { logger } from '@/utils/logger'
@@ -15,11 +25,26 @@ import './ProgrammeDetail.css'
 export default function ProgrammeDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [programme, setProgramme] = useState(null)
   const [projets, setProjets] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadingProjets, setLoadingProjets] = useState(false)
-  const [activeTab, setActiveTab] = useState('details') // 'details', 'projets', ou 'history'
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'dashboard')
+  
+  // Mettre à jour le tab si changé via URL
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab')
+    if (tabFromUrl && tabFromUrl !== activeTab) {
+      setActiveTab(tabFromUrl)
+    }
+  }, [searchParams])
+  
+  // Fonction pour changer de tab et mettre à jour l'URL
+  const handleTabChange = (tab) => {
+    setActiveTab(tab)
+    navigate(`/programmes/${id}${tab !== 'dashboard' ? `?tab=${tab}` : ''}`, { replace: true })
+  }
 
   useEffect(() => {
     loadProgramme()
@@ -80,7 +105,7 @@ export default function ProgrammeDetail() {
     return (
       <div className="programme-detail-error">
         <h2>Programme non trouvé</h2>
-        <Button onClick={() => navigate('/programmes?tab=liste')}>
+        <Button onClick={() => navigate('/programmes')}>
           Retour à la liste
         </Button>
       </div>
@@ -90,38 +115,104 @@ export default function ProgrammeDetail() {
   return (
     <div className="programme-detail">
       <div className="programme-detail-header">
-        <Button onClick={() => navigate('/programmes?tab=liste')}>
+        <Button onClick={() => navigate('/programmes')}>
           ← Retour
         </Button>
         <div className="programme-detail-title">
           <h1>{programme.nom}</h1>
-          <span className="programme-detail-id">ID: {programme.id}</span>
+          <div className="programme-detail-meta">
+            <span className="programme-detail-id">ID: {programme.id}</span>
+            {programme.code && (
+              <span className="programme-detail-code">Code: {programme.code}</span>
+            )}
+            {programme.statut && (
+              <span className={`programme-detail-statut statut-${programme.statut.toLowerCase().replace(/\s+/g, '-')}`}>
+                {programme.statut}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
       <div className="programme-detail-tabs">
         <button
-          className={`programme-detail-tab ${activeTab === 'details' ? 'active' : ''}`}
-          onClick={() => setActiveTab('details')}
+          className={`programme-detail-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
+          onClick={() => handleTabChange('dashboard')}
         >
-          Détails
+          Vue d'ensemble
+        </button>
+        <button
+          className={`programme-detail-tab ${activeTab === 'depenses' ? 'active' : ''}`}
+          onClick={() => handleTabChange('depenses')}
+        >
+          Dépenses
         </button>
         <button
           className={`programme-detail-tab ${activeTab === 'projets' ? 'active' : ''}`}
-          onClick={() => setActiveTab('projets')}
+          onClick={() => handleTabChange('projets')}
         >
           Projets ({projets.length})
         </button>
         <button
+          className={`programme-detail-tab ${activeTab === 'candidats' ? 'active' : ''}`}
+          onClick={() => handleTabChange('candidats')}
+        >
+          Candidats
+        </button>
+        <button
+          className={`programme-detail-tab ${activeTab === 'beneficiaires' ? 'active' : ''}`}
+          onClick={() => handleTabChange('beneficiaires')}
+        >
+          Bénéficiaires
+        </button>
+        <button
+          className={`programme-detail-tab ${activeTab === 'risques' ? 'active' : ''}`}
+          onClick={() => handleTabChange('risques')}
+        >
+          Risques
+        </button>
+        <button
+          className={`programme-detail-tab ${activeTab === 'jalons' ? 'active' : ''}`}
+          onClick={() => handleTabChange('jalons')}
+        >
+          Jalons
+        </button>
+        <button
+          className={`programme-detail-tab ${activeTab === 'reporting' ? 'active' : ''}`}
+          onClick={() => handleTabChange('reporting')}
+        >
+          Reporting
+        </button>
+        <button
+          className={`programme-detail-tab ${activeTab === 'details' ? 'active' : ''}`}
+          onClick={() => handleTabChange('details')}
+        >
+          Détails
+        </button>
+        <button
           className={`programme-detail-tab ${activeTab === 'history' ? 'active' : ''}`}
-          onClick={() => setActiveTab('history')}
+          onClick={() => handleTabChange('history')}
         >
           Historique
         </button>
       </div>
 
       <div className="programme-detail-content">
-        {activeTab === 'details' ? (
+        {activeTab === 'dashboard' ? (
+          <ProgrammeDashboardDetail programmeId={id} />
+        ) : activeTab === 'depenses' ? (
+          <DepensesProgramme programmeId={id} />
+        ) : activeTab === 'risques' ? (
+          <RisquesProgramme programmeId={id} />
+        ) : activeTab === 'jalons' ? (
+          <JalonsProgramme programmeId={id} />
+        ) : activeTab === 'reporting' ? (
+          <ReportingProgramme programmeId={id} />
+        ) : activeTab === 'candidats' ? (
+          <ProgrammeCandidats programmeId={id} />
+        ) : activeTab === 'beneficiaires' ? (
+          <ProgrammeBeneficiaires programmeId={id} />
+        ) : activeTab === 'details' ? (
           <div className="programme-detail-info">
             <div className="programme-detail-section">
               <h2>Informations générales</h2>
@@ -217,7 +308,7 @@ export default function ProgrammeDetail() {
           </div>
         ) : (
           <div className="programme-detail-history">
-            <AuditTrail tableName="programmes" recordId={id} />
+            <TimelineHistory tableName="programmes" recordId={id} />
           </div>
         )}
       </div>

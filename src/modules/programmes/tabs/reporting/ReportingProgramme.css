@@ -1,23 +1,89 @@
 .reporting-programme {
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
+/* Header */
 .reporting-header {
-  margin-bottom: 24px;
+  margin-bottom: 8px;
+  padding: 0;
 }
 
 .reporting-header h2 {
-  margin: 0;
+  margin: 0 0 8px 0;
   font-size: 24px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: -0.5px;
 }
 
+.reporting-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+/* KPIs Section */
+.reporting-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.stat-card-modern {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.2s ease;
+}
+
+.stat-card-modern:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* Content */
 .reporting-content {
   background: white;
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
 }
 
 .rapports-actions {
@@ -34,14 +100,15 @@
   margin-bottom: 24px;
   padding: 20px;
   background: #f9fafb;
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
 }
 
 .rapports-info {
-  margin-top: 24px;
+  margin-top: 0;
   padding: 16px;
   background: #eff6ff;
-  border-radius: 8px;
+  border-radius: 12px;
   border-left: 4px solid #3b82f6;
 }
 
@@ -53,5 +120,37 @@
 .info-text {
   font-size: 14px;
   color: var(--color-text-secondary) !important;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .reporting-programme {
+    gap: 16px;
+  }
+
+  .reporting-stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .reporting-content {
+    padding: 16px;
+  }
+
+  .rapports-actions {
+    flex-direction: column;
+  }
+
+  .rapports-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Tablette */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .reporting-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 

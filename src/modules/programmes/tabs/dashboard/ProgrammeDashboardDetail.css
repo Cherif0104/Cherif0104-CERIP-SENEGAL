@@ -1,0 +1,148 @@
+.programme-dashboard-detail {
+  padding: 24px;
+  background: var(--bg-primary);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.dashboard-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.dashboard-dates {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.dashboard-section {
+  margin-bottom: 32px;
+  padding: 24px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.dashboard-section h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.dashboard-charts-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.donut-chart-card {
+  background: var(--bg-primary);
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.programme-dashboard-error {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.dashboard-depenses-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color);
+}
+
+.dashboard-depenses-section h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.depense-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.depense-link:hover {
+  text-decoration: underline;
+}
+
+.depense-statut {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.depense-statut.statut-valide,
+.depense-statut.statut-paye {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.depense-statut.statut-brouillon {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.depense-statut.statut-annule {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.dashboard-depenses-footer {
+  margin-top: 16px;
+  text-align: right;
+}
+
+.view-all-button {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.view-all-button:hover {
+  background: var(--bg-hover);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .dashboard-charts-row {
+    grid-template-columns: 1fr;
+  }
+}
+

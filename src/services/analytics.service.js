@@ -1,63 +1,34 @@
 import { supabase } from '@/lib/supabase'
+import { globalMetricsService } from './global-metrics.service'
 
 export const analyticsService = {
+  /**
+   * Obtenir les KPIs globaux depuis données réelles interconnectées
+   * Délègue au service globalMetricsService qui calcule depuis toutes les relations
+   */
   async getGlobalKPIs() {
     try {
-      // Get programmes actifs (statut peut être ACTIF, EN_COURS, OUVERT)
-      const { data: programmes, error: programmesError } = await supabase
-        .from('programmes')
-        .select('id')
-        .in('statut', ['ACTIF', 'EN_COURS', 'OUVERT'])
-
-      if (programmesError) throw programmesError
-
-      // Get projets en cours
-      const { data: projets, error: projetsError } = await supabase
-        .from('projets')
-        .select('id, budget')
-
-      if (projetsError) throw projetsError
-
-      // Get candidats
-      const { data: candidats, error: candidatsError } = await supabase
-        .from('candidats')
-        .select('id, statut_global')
-
-      if (candidatsError) throw candidatsError
-
-      // Get bénéficiaires
-      const { data: beneficiaires, error: beneficiairesError } = await supabase
-        .from('beneficiaires')
-        .select('id, statut')
-
-      if (beneficiairesError) throw beneficiairesError
-
-      // Calculate KPIs
-      const programmesActifs = programmes?.length || 0
-      const projetsEnCours = projets?.length || 0
-      const budgetTotal = projets?.reduce((sum, p) => sum + (p.budget || 0), 0) || 0
-      const budgetConsomme = 0 // À calculer depuis programme_depenses
-      const candidatsTotal = candidats?.length || 0
-      const beneficiairesTotal = beneficiaires?.length || 0
-      const tauxConversion = candidatsTotal > 0
-        ? Math.round((beneficiairesTotal / candidatsTotal) * 100)
-        : 0
-
+      // Utiliser le service centralisé qui calcule depuis données réelles
+      const kpis = await globalMetricsService.getGlobalKPIs()
       return {
-        programmesActifs,
-        projetsEnCours,
-        budgetTotal,
-        budgetConsomme,
-        candidatsTotal,
-        beneficiairesTotal,
-        tauxConversion,
-        error: null,
+        programmesActifs: kpis.programmesActifs || 0,
+        programmesTotal: kpis.programmesTotal || 0,
+        projetsEnCours: kpis.projetsEnCours || 0,
+        projetsTotal: kpis.projetsTotal || 0,
+        budgetTotal: kpis.budgetTotal || 0,
+        budgetConsomme: kpis.budgetConsomme || 0,
+        candidatsTotal: kpis.candidatsTotal || 0,
+        beneficiairesTotal: kpis.beneficiairesTotal || 0,
+        tauxConversion: kpis.tauxConversion || 0,
+        error: kpis.error || null,
       }
     } catch (error) {
       console.error('Error getting global KPIs:', error)
       return {
         programmesActifs: 0,
+        programmesTotal: 0,
         projetsEnCours: 0,
+        projetsTotal: 0,
         budgetTotal: 0,
         budgetConsomme: 0,
         candidatsTotal: 0,
@@ -68,25 +39,111 @@ export const analyticsService = {
     }
   },
 
+  /**
+   * Obtenir les statistiques d'un module depuis données réelles interconnectées
+   * Délègue au service globalMetricsService qui calcule depuis toutes les relations
+   */
   async getModuleStats(module) {
     try {
+      // Mapper les noms de modules vers ceux utilisés par globalMetricsService
+      const moduleMap = {
+        'programmes-projets': 'programmes',
+        'candidatures': 'candidatures',
+        'beneficiaires': 'beneficiaires',
+        'intervenants': 'intervenants',
+        'reporting': 'reporting',
+        'rh': 'rh',
+        'partenaires': 'partenaires',
+        'tresorerie': 'tresorerie',
+        'gestion-temps': 'gestion-temps',
+      }
+
+      const moduleName = moduleMap[module] || module
+
+      // Utiliser le service centralisé
+      const stats = await globalMetricsService.getModuleKPIs(moduleName)
+
+      if (stats.error) {
+        // Fallback vers méthodes locales si erreur
+        return await this.getModuleStatsFallback(module)
+      }
+
+      // Adapter le format de retour selon le module
       switch (module) {
         case 'programmes-projets':
-          return await this.getProgrammesProjetsStats()
+          return {
+            totalProgrammes: stats.total || 0,
+            programmesActifs: stats.actifs || 0,
+            totalProjets: stats.total || 0,
+            projetsEnCours: stats.actifs || 0,
+            budgetTotal: stats.budgetTotal || 0,
+            budgetConsomme: stats.budgetConsomme || 0,
+            error: null,
+          }
         case 'candidatures':
-          return await this.getCandidaturesStats()
+          return {
+            appelsOuverts: stats.appelsOuverts || 0,
+            candidatsTotal: stats.candidatsTotal || 0,
+            candidatsEligibles: stats.candidatsEligibles || 0,
+            tauxEligibilite: stats.tauxEligibilite || 0,
+            error: null,
+          }
         case 'beneficiaires':
-          return await this.getBeneficiairesStats()
+          return {
+            beneficiairesActifs: stats.actifs || 0,
+            insertionsTotal: stats.inserts || 0,
+            tauxInsertion: stats.tauxInsertion || 0,
+            error: null,
+          }
         case 'intervenants':
-          return await this.getIntervenantsStats()
+          return {
+            mentors: stats.mentorsActifs || 0,
+            formateurs: 0, // À calculer depuis données réelles si table existe
+            coaches: 0, // À calculer depuis données réelles si table existe
+            total: stats.mentorsTotal || 0,
+            error: null,
+          }
         case 'reporting':
-          return await this.getReportingStats()
+          return {
+            rapportsGeneres: stats.rapportsTotal || 0,
+            rapportsEnAttente: stats.rapportsEnAttente || 0,
+            tauxCompletion: stats.tauxCompletion || 0,
+            error: null,
+          }
+        case 'administration':
+          return {
+            utilisateursActifs: stats.utilisateursActifs || 0,
+            referentiels: stats.referentiels || 0,
+            logsAudit: stats.logsAudit || 0,
+            administrateurs: stats.administrateurs || 0,
+            error: null,
+          }
         default:
-          return { error: 'Module inconnu' }
+          return stats
       }
     } catch (error) {
       console.error(`Error getting stats for ${module}:`, error)
       return { error }
+    }
+  },
+
+  /**
+   * Fallback vers méthodes locales si globalMetricsService échoue
+   */
+  async getModuleStatsFallback(module) {
+    switch (module) {
+      case 'programmes-projets':
+        return await this.getProgrammesProjetsStats()
+      case 'candidatures':
+        return await this.getCandidaturesStats()
+      case 'beneficiaires':
+        return await this.getBeneficiairesStats()
+      case 'intervenants':
+        return await this.getIntervenantsStats()
+      case 'reporting':
+        return await this.getReportingStats()
+      default:
+        return { error: 'Module inconnu' }
     }
   },
 

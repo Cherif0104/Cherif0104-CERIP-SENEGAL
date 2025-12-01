@@ -18,8 +18,8 @@ export const predictiveAnalyticsService = {
       const kpis = await analyticsService.getGlobalKPIs()
       const { data: depenses } = await supabase
         .from('programme_depenses')
-        .select('montant, date')
-        .order('date', { ascending: false })
+        .select('montant, date_depense')
+        .order('date_depense', { ascending: false })
         .limit(12)
 
       if (!depenses || depenses.length === 0) {
@@ -321,7 +321,9 @@ export const predictiveAnalyticsService = {
   groupByMonth(data) {
     const grouped = {}
     data.forEach(item => {
-      const month = new Date(item.date).toLocaleString('fr-FR', { year: 'numeric', month: 'numeric' })
+      const dateValue = item.date_depense || item.date // Support both formats
+      if (!dateValue) return
+      const month = new Date(dateValue).toLocaleString('fr-FR', { year: 'numeric', month: 'numeric' })
       if (!grouped[month]) {
         grouped[month] = { month, total: 0, count: 0 }
       }

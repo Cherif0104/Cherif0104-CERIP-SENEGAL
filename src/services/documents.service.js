@@ -12,8 +12,11 @@ export const documentsService = {
     'application/pdf': ['.pdf'],
     'application/msword': ['.doc'],
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+    'application/vnd.ms-excel': ['.xls'],
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
     'image/jpeg': ['.jpg', '.jpeg'],
     'image/png': ['.png'],
+    'image/jpg': ['.jpg'],
   },
 
   /**
@@ -39,12 +42,17 @@ export const documentsService = {
       }
     }
 
-    // Vérifier le type MIME
+    // Vérifier le type MIME (plus flexible - accepter si type correspond ou extension valide)
     const fileType = file.type
-    if (!Object.keys(types).includes(fileType)) {
+    const fileExtension = '.' + file.name.split('.').pop().toLowerCase()
+    const acceptedExtensions = Object.values(types).flat()
+    const hasAcceptedType = Object.keys(types).includes(fileType)
+    const hasAcceptedExtension = acceptedExtensions.some(ext => fileExtension === ext.toLowerCase())
+    
+    if (!hasAcceptedType && !hasAcceptedExtension) {
       return {
         valid: false,
-        error: `Type de fichier non accepté. Types acceptés: ${Object.keys(types).join(', ')}`,
+        error: `Type de fichier non accepté. Formats acceptés: PDF, images (JPG, PNG), Word, Excel`,
       }
     }
 
@@ -89,8 +97,23 @@ export const documentsService = {
       })
 
       if (error) {
-        logger.error('DOCUMENTS_SERVICE', 'Erreur upload Supabase', error)
-        return { data: null, error }
+        logger.error('DOCUMENTS_SERVICE', 'Erreur upload Supabase', {
+          error,
+          message: error?.message,
+          statusCode: error?.statusCode,
+          bucket,
+          filePath
+        })
+        
+        // Message d'erreur plus informatif
+        let errorMessage = error?.message || 'Erreur lors de l\'upload du fichier'
+        if (error?.message?.includes('Bucket not found') || error?.statusCode === 404) {
+          errorMessage = `Le bucket "${bucket}" n'existe pas. Veuillez le créer dans Supabase Storage.`
+        } else if (error?.message?.includes('permission') || error?.statusCode === 403) {
+          errorMessage = `Permissions insuffisantes pour uploader dans le bucket "${bucket}".`
+        }
+        
+        return { data: null, error: { ...error, message: errorMessage } }
       }
 
       // Obtenir l'URL publique

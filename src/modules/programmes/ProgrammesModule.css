@@ -6,3 +6,24 @@
   margin-top: var(--spacing-xl);
 }
 
+/* Style spécial pour le bouton "Créer un Programme" */
+.create-programme-button {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  padding: 12px 24px !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.create-programme-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
+}
+
+.create-programme-button:active {
+  transform: translateY(0) !important;
+}
+

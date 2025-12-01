@@ -1,0 +1,147 @@
+/* Styles identiques à ProgrammeDashboardDetail.css */
+.projet-dashboard-detail {
+  padding: 24px 32px;
+  background: #f9fafb;
+  min-height: calc(100vh - 200px);
+}
+
+.projet-dashboard-error {
+  padding: 48px;
+  text-align: center;
+  color: #6b7280;
+}
+
+/* KPI Grid - Single Line avec scroll horizontal */
+.kpi-grid-single-line {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-bottom: 8px;
+  margin-bottom: 32px;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+.kpi-grid-single-line::-webkit-scrollbar {
+  height: 6px;
+}
+
+.kpi-grid-single-line::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.kpi-grid-single-line::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.kpi-grid-single-line::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.kpi-grid-single-line > * {
+  flex: 0 0 auto;
+  min-width: 200px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .kpi-grid-single-line {
+    gap: 16px;
+  }
+  
+  .kpi-grid-single-line > * {
+    min-width: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .kpi-grid-single-line {
+    gap: 12px;
+  }
+  
+  .kpi-grid-single-line > * {
+    min-width: 160px;
+  }
+}
+
+/* Sections du dashboard */
+.dashboard-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.dashboard-section {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.dashboard-section h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-header h3 {
+  margin: 0;
+}
+
+.view-all-link {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.view-all-link:hover {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .projet-dashboard-detail {
+    padding: 16px;
+  }
+
+  .dashboard-sections {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .dashboard-section {
+    padding: 16px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+

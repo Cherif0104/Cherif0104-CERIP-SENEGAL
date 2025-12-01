@@ -60,9 +60,11 @@ export class ProjetRepository extends BaseRepository {
     try {
       logger.debug('PROJET_REPOSITORY', 'Récupération projet avec relations', { id })
 
+      // Spécifier explicitement la contrainte pour éviter l'ambiguïté
+      // Il y a deux contraintes FK : projets_programme_fk et projets_programme_id_fkey
       const { data, error } = await supabase
         .from(this.tableName)
-        .select('*, programmes(*)')
+        .select('*, programmes!projets_programme_id_fkey(*)')
         .eq('id', id)
         .single()
 
@@ -87,9 +89,10 @@ export class ProjetRepository extends BaseRepository {
 
       logger.debug('PROJET_REPOSITORY', 'Recherche projets', { searchTerm, options })
 
+      // Spécifier explicitement la contrainte pour éviter l'ambiguïté
       let query = supabase
         .from(this.tableName)
-        .select('*, programmes(*)')
+        .select('*, programmes!projets_programme_id_fkey(*)')
         .or(`nom.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`)
 
       // Pagination

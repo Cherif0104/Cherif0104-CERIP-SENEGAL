@@ -1,0 +1,151 @@
+.bar-chart-container {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.bar-chart-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 20px;
+}
+
+.bar-chart-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* Horizontal bars */
+.bar-chart-horizontal {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bar-chart-horizontal-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bar-chart-horizontal-label {
+  min-width: 100px;
+  font-size: 13px;
+  color: #374151;
+  text-align: right;
+}
+
+.bar-chart-horizontal-bar-wrapper {
+  flex: 1;
+  height: 28px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bar-chart-horizontal-bar {
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  transition: width 0.3s ease;
+}
+
+.bar-chart-horizontal-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Vertical bars */
+.bar-chart-vertical-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.bar-chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.bar-chart-bar {
+  transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+  cursor: pointer;
+}
+
+.bar-chart-bar:hover,
+.bar-chart-bar.bar-hovered {
+  opacity: 0.85;
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.bar-chart-horizontal-bar {
+  position: relative;
+}
+
+.bar-chart-horizontal-bar.bar-hovered {
+  filter: brightness(1.1);
+  transform: scaleX(1.02);
+  transform-origin: left;
+}
+
+.bar-animated {
+  animation: barGrow 0.6s ease-out both;
+}
+
+.bar-tooltip-horizontal {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 12px;
+  background: rgba(17, 24, 39, 0.95);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.bar-tooltip-horizontal::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-left-color: rgba(17, 24, 39, 0.95);
+}
+
+.bar-tooltip-vertical-group {
+  pointer-events: none;
+}
+
+.bar-tooltip-vertical-group rect {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes barGrow {
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+

@@ -157,25 +157,22 @@ export const SelectCreatable = ({
         {...props}
       />
 
-      {/* Zone pour créer nouvelle valeur - afficher après le select */}
+      {/* Bouton "Autre" toujours visible pour créer une nouvelle valeur */}
       {allowCreate && (
         <div className="select-creatable-actions">
-          <input
-            type="text"
-            placeholder="Ou tapez une nouvelle valeur..."
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            className="select-creatable-input"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && inputValue.trim()) {
-                e.preventDefault()
-                const found = options.find((opt) => opt.value.toLowerCase() === inputValue.toLowerCase())
-                if (!found) {
-                  handleOpenCreateModal()
-                }
-              }
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setNewValue('')
+              setShowCreateModal(true)
             }}
-          />
+            className="select-creatable-autre-btn"
+          >
+            <Icon name="Plus" size={16} />
+            Autre...
+          </Button>
           {inputValue && !options.find((opt) => opt.value.toLowerCase() === inputValue.toLowerCase()) && (
             <Button
               type="button"
@@ -185,7 +182,7 @@ export const SelectCreatable = ({
               className="select-creatable-btn"
             >
               <Icon name="Plus" size={16} />
-              Créer
+              Créer "{inputValue}"
             </Button>
           )}
         </div>
@@ -196,17 +193,49 @@ export const SelectCreatable = ({
         <div className="select-creatable-modal-overlay" onClick={() => setShowCreateModal(false)}>
           <div className="select-creatable-modal" onClick={(e) => e.stopPropagation()}>
             <h3>Créer une nouvelle valeur</h3>
-            <p>Ajouter "{newValue}" au référentiel {referentielCode || ''}?</p>
+            <p className="select-creatable-modal-description">
+              {referentielCode 
+                ? `Ajouter une nouvelle valeur au référentiel "${referentielCode}"` 
+                : 'Créer une nouvelle option'}
+            </p>
+            <div className="select-creatable-modal-input-wrapper">
+              <input
+                type="text"
+                className="select-creatable-modal-input"
+                value={newValue}
+                onChange={(e) => setNewValue(e.target.value)}
+                placeholder="Saisir la nouvelle valeur..."
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && newValue.trim()) {
+                    e.preventDefault()
+                    handleCreate()
+                  } else if (e.key === 'Escape') {
+                    setShowCreateModal(false)
+                  }
+                }}
+              />
+            </div>
             <div className="select-creatable-modal-actions">
               <Button
                 type="button"
                 variant="secondary"
-                onClick={() => setShowCreateModal(false)}
+                onClick={() => {
+                  setShowCreateModal(false)
+                  setNewValue('')
+                }}
                 disabled={creating}
               >
                 Annuler
               </Button>
-              <Button type="button" variant="primary" onClick={handleCreate} loading={creating}>
+              <Button 
+                type="button" 
+                variant="primary" 
+                onClick={handleCreate} 
+                loading={creating}
+                disabled={!newValue.trim()}
+              >
+                <Icon name="Plus" size={16} />
                 Créer
               </Button>
             </div>

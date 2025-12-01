@@ -1,0 +1,280 @@
+/* Styles identiques à DepensesProjet.css pour cohérence */
+.activites-projet {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.activites-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.activites-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.activites-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.activites-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.activites-filters {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+}
+
+.activites-filters .input-wrapper,
+.activites-filters .select-wrapper {
+  flex: 1;
+  min-width: 150px;
+}
+
+.activites-summary {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  border-radius: 4px;
+}
+
+.activites-summary p {
+  margin: 0;
+  color: #1e40af;
+  font-size: 14px;
+}
+
+.activite-statut {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.activite-statut.statut-planifie {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.activite-statut.statut-en_cours {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.activite-statut.statut-termine {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.activite-statut.statut-annule {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.activite-type {
+  display: inline-block;
+  padding: 4px 8px;
+  background: #f3f4f6;
+  color: #4b5563;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.activite-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.activite-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+  transform: translateX(2px);
+}
+
+.action-button {
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 4px;
+}
+
+.action-button:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #1f2937;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.action-button.danger {
+  border-color: #fee2e2;
+  color: #ef4444;
+}
+
+.action-button.danger:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .activites-projet {
+    padding: 16px;
+  }
+
+  .activites-header {
+    flex-direction: column;
+  }
+
+  .activites-actions {
+    width: 100%;
+  }
+
+  .activites-stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .activites-filters {
+    flex-direction: column;
+  }
+
+  .activites-filters .input-wrapper,
+  .activites-filters .select-wrapper {
+    width: 100%;
+  }
+}
+
+/* Section Ressources dans Activités */
+.activite-ressources-expanded {
+  padding: 20px;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 8px;
+}
+
+.activite-ressources-expanded h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.ressources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ressource-reservation-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.ressource-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ressource-info strong {
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.ressource-type {
+  font-size: 12px;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.ressource-details {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* Tablette */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .activites-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

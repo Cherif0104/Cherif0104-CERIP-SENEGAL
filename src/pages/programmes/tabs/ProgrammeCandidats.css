@@ -1,0 +1,89 @@
+.programme-candidats {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* KPIs Section */
+.programme-candidats-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 8px;
+}
+
+/* Charts Section */
+.programme-candidats-charts {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+/* Header */
+.programme-candidats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.programme-candidats-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: -0.5px;
+}
+
+.programme-candidats-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+/* Table Section */
+.programme-candidats-table {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .programme-candidats {
+    gap: 16px;
+  }
+
+  .programme-candidats-stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .programme-candidats-charts,
+  .programme-candidats-table {
+    padding: 16px;
+  }
+
+  .programme-candidats-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .programme-candidats-header h2 {
+    font-size: 20px;
+  }
+}
+
+/* Tablette */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .programme-candidats-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

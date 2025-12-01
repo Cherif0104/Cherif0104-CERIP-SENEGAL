@@ -14,10 +14,29 @@ export const useAuth = () => {
     logger.debug('USE_AUTH', 'Initialisation du hook useAuth')
     let mounted = true
 
-    // Get initial session
+    // Get initial session - Vérifier d'abord la session Supabase persistante
     const checkUser = async () => {
       logger.debug('USE_AUTH', 'Vérification de la session utilisateur...')
       try {
+        // Vérifier d'abord si Supabase a une session persistante
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        
+        if (sessionError) {
+          logger.warn('USE_AUTH', 'Erreur lors de la récupération de la session', sessionError)
+        }
+
+        // Si on a une session, utiliser l'utilisateur de la session
+        if (session?.user && mounted) {
+          logger.debug('USE_AUTH', 'Session persistante trouvée', { 
+            userId: session.user.id, 
+            email: session.user.email 
+          })
+          setUser(session.user)
+          await loadUserProfile(session.user.id)
+          return
+        }
+
+        // Sinon, essayer getCurrentUser (qui peut rafraîchir la session)
         const { user: currentUser, error } = await authService.getCurrentUser()
         if (error) {
           logger.warn('USE_AUTH', 'Erreur lors de la récupération de l\'utilisateur', error)
@@ -218,14 +237,20 @@ export const useAuth = () => {
   const signOut = async () => {
     setLoading(true)
     try {
+      // Arrêter le gestionnaire de session
+      const { sessionManager } = await import('@/utils/sessionManager')
+      sessionManager.stop()
+      
       const { error } = await authService.signOut()
       if (error) {
         return { error }
       }
       setUser(null)
       setProfile(null)
+      
+      // Rediriger vers login après déconnexion
       if (navigate) {
-        navigate('/login')
+        navigate('/login', { replace: true })
       }
       return { error: null }
     } catch (error) {

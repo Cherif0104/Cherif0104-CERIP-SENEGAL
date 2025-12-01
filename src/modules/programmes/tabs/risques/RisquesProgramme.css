@@ -1,35 +1,70 @@
 .risques-programme {
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
+/* Header */
 .risques-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  padding: 0;
+  gap: 24px;
 }
 
 .risques-header h2 {
-  margin: 0;
+  margin: 0 0 8px 0;
   font-size: 24px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: -0.5px;
 }
 
-.risques-matrix {
-  margin-bottom: 24px;
+.risques-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.risques-filters {
+  flex-shrink: 0;
+}
+
+/* KPIs Section */
+.risques-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+/* Charts Section */
+.risques-charts {
   background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
 }
 
+/* Risk Matrix */
+.risques-matrix {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+/* Table */
 .risques-table {
   background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
 }
 
 .risk-score {
@@ -96,3 +131,33 @@
   color: var(--color-text-secondary);
 }
 
+/* Mobile */
+@media (max-width: 640px) {
+  .risques-programme {
+    gap: 16px;
+  }
+
+  .risques-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .risques-stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .risques-matrix,
+  .risques-table,
+  .risques-charts {
+    padding: 16px;
+  }
+}
+
+/* Tablette */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .risques-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

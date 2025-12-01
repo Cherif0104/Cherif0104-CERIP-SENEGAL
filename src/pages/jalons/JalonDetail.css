@@ -1,0 +1,31 @@
+.detail-info-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-info-value.statut-termine,
+.detail-info-value.statut-valide {
+  color: #10b981;
+  font-weight: 700;
+}
+
+.detail-info-value.statut-en-cours,
+.detail-info-value.statut-en-attente {
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+.detail-info-item.warning {
+  border-left-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.detail-info-value.success {
+  color: #10b981;
+}
+
+.detail-empty-text {
+  color: #9ca3af;
+  font-style: italic;
+  padding: 16px;
+  text-align: center;
+}

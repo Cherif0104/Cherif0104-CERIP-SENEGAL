@@ -5,8 +5,9 @@ import './Timeline.css'
  * Timeline - Composant pour afficher une timeline de jalons
  * @param {Object} props
  * @param {Array} props.jalons - Array de jalons {id, libelle, date_prevue, date_reelle, statut, ordre}
+ * @param {Function} props.onJalonClick - Callback appelé quand on clique sur un jalon
  */
-export function Timeline({ jalons = [] }) {
+export function Timeline({ jalons = [], onJalonClick = null }) {
   if (!jalons || jalons.length === 0) {
     return <div className="timeline-empty">Aucun jalon à afficher</div>
   }
@@ -47,7 +48,13 @@ export function Timeline({ jalons = [] }) {
           </div>
           <div className="timeline-content">
             <div className="timeline-header">
-              <h4 className="timeline-title">{jalon.libelle}</h4>
+              <h4 
+                className={`timeline-title ${onJalonClick ? 'clickable' : ''}`}
+                onClick={onJalonClick ? () => onJalonClick(jalon) : undefined}
+                style={onJalonClick ? { cursor: 'pointer' } : {}}
+              >
+                {jalon.libelle}
+              </h4>
               <span className={`timeline-statut ${getStatutClass(jalon.statut)}`}>
                 {jalon.statut || 'En attente'}
               </span>

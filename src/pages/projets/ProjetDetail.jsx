@@ -1,36 +1,49 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { projetsService } from '@/services/projets.service'
-import { beneficiairesService } from '@/services/beneficiaires.service'
-import { appelsService } from '@/services/appels.service'
 import { auditService } from '@/services/audit.service'
 import { LoadingState } from '@/components/common/LoadingState'
 import { EmptyState } from '@/components/common/EmptyState'
 import { Button } from '@/components/common/Button'
 import { Icon } from '@/components/common/Icon'
-import { DataTable } from '@/components/common/DataTable'
-import { PermissionGuard } from '@/components/common/PermissionGuard'
-import { AuditTrail } from '@/components/audit/AuditTrail'
+import { TimelineHistory } from '@/components/audit/TimelineHistory'
 import { formatDate, formatCurrency } from '@/utils/format'
 import { toast } from '@/components/common/Toast'
 import { logger } from '@/utils/logger'
+import ProjetDashboardDetail from '@/modules/projets/tabs/dashboard/ProjetDashboardDetail'
+import DepensesProjet from '@/modules/projets/tabs/depenses/DepensesProjet'
+import ActivitesProjet from '@/modules/projets/tabs/activites/ActivitesProjet'
+import CandidatsProjet from '@/modules/projets/tabs/candidats/CandidatsProjet'
+import BeneficiairesProjet from '@/modules/projets/tabs/beneficiaires/BeneficiairesProjet'
+import RisquesProjetDetail from '@/modules/projets/tabs/risques/RisquesProjetDetail'
+import JalonsProjetDetail from '@/modules/projets/tabs/jalons/JalonsProjetDetail'
+import ReportingProjetDetail from '@/modules/projets/tabs/reporting/ReportingProjetDetail'
 import './ProjetDetail.css'
 
 export default function ProjetDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [projet, setProjet] = useState(null)
-  const [beneficiaires, setBeneficiaires] = useState([])
-  const [appels, setAppels] = useState([])
   const [loading, setLoading] = useState(true)
-  const [loadingBeneficiaires, setLoadingBeneficiaires] = useState(false)
-  const [loadingAppels, setLoadingAppels] = useState(false)
-  const [activeTab, setActiveTab] = useState('details') // 'details', 'beneficiaires', 'appels', 'history'
+  const [searchParams] = useSearchParams()
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'dashboard') // 'dashboard', 'depenses', 'activites', 'candidats', 'beneficiaires', 'risques', 'jalons', 'reporting', 'details', 'history'
+
+  // Mettre à jour le tab si changé via URL
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab')
+    if (tabFromUrl && tabFromUrl !== activeTab) {
+      setActiveTab(tabFromUrl)
+    }
+  }, [searchParams])
+
+  // Fonction pour changer de tab et mettre à jour l'URL
+  const handleTabChange = (tab) => {
+    setActiveTab(tab)
+    navigate(`/projets/${id}${tab !== 'dashboard' ? `?tab=${tab}` : ''}`, { replace: true })
+  }
 
   useEffect(() => {
     loadProjet()
-    loadBeneficiaires()
-    loadAppels()
     logView()
   }, [id])
 
@@ -53,39 +66,6 @@ export default function ProjetDetail() {
     }
   }
 
-  const loadBeneficiaires = async () => {
-    setLoadingBeneficiaires(true)
-    try {
-      const { data, error } = await beneficiairesService.getByProjet(id)
-      if (error) {
-        logger.error('PROJET_DETAIL', 'Erreur chargement bénéficiaires', error)
-        return
-      }
-      setBeneficiaires(data || [])
-      logger.debug('PROJET_DETAIL', `${data?.length || 0} bénéficiaires chargés`)
-    } catch (error) {
-      logger.error('PROJET_DETAIL', 'Erreur inattendue chargement bénéficiaires', error)
-    } finally {
-      setLoadingBeneficiaires(false)
-    }
-  }
-
-  const loadAppels = async () => {
-    setLoadingAppels(true)
-    try {
-      const { data, error } = await appelsService.getByProjet(id)
-      if (error) {
-        logger.error('PROJET_DETAIL', 'Erreur chargement appels', error)
-        return
-      }
-      setAppels(data || [])
-      logger.debug('PROJET_DETAIL', `${data?.length || 0} appels chargés`)
-    } catch (error) {
-      logger.error('PROJET_DETAIL', 'Erreur inattendue chargement appels', error)
-    } finally {
-      setLoadingAppels(false)
-    }
-  }
 
   const logView = async () => {
     try {
@@ -103,7 +83,7 @@ export default function ProjetDetail() {
     return (
       <div className="projet-detail-error">
         <h2>Projet non trouvé</h2>
-        <Button onClick={() => navigate('/projets?tab=liste')}>
+        <Button onClick={() => navigate('/projets')}>
           Retour à la liste
         </Button>
       </div>
@@ -113,51 +93,136 @@ export default function ProjetDetail() {
   return (
     <div className="projet-detail">
       <div className="projet-detail-header">
-        <Button onClick={() => navigate('/projets?tab=liste')}>
+        <Button onClick={() => navigate('/projets')}>
           ← Retour
         </Button>
         <div className="projet-detail-title">
           <h1>{projet.nom}</h1>
-          <span className="projet-detail-id">ID: {projet.id}</span>
+          <div className="projet-detail-meta">
+            <span className="projet-detail-id">ID: {projet.id}</span>
+            {projet.code && (
+              <span className="projet-detail-code">Code: {projet.code}</span>
+            )}
+            {projet.statut && (
+              <span className={`projet-detail-statut statut-${projet.statut.toLowerCase().replace(/\s+/g, '-')}`}>
+                {projet.statut}
+              </span>
+            )}
+            {projet.programme_id && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate(`/programmes/${projet.programme_id}`)}
+                className="projet-link-programme"
+              >
+                <Icon name="ArrowLeft" size={14} />
+                Voir le programme
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
       <div className="projet-detail-tabs">
         <button
+          className={`projet-detail-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
+          onClick={() => handleTabChange('dashboard')}
+        >
+          Vue d'ensemble
+        </button>
+        <button
+          className={`projet-detail-tab ${activeTab === 'depenses' ? 'active' : ''}`}
+          onClick={() => handleTabChange('depenses')}
+        >
+          Dépenses
+        </button>
+        <button
+          className={`projet-detail-tab ${activeTab === 'activites' ? 'active' : ''}`}
+          onClick={() => handleTabChange('activites')}
+        >
+          Activités
+        </button>
+        <button
+          className={`projet-detail-tab ${activeTab === 'candidats' ? 'active' : ''}`}
+          onClick={() => handleTabChange('candidats')}
+        >
+          Candidats
+        </button>
+        <button
+          className={`projet-detail-tab ${activeTab === 'beneficiaires' ? 'active' : ''}`}
+          onClick={() => handleTabChange('beneficiaires')}
+        >
+          Bénéficiaires
+        </button>
+        <button
+          className={`projet-detail-tab ${activeTab === 'risques' ? 'active' : ''}`}
+          onClick={() => handleTabChange('risques')}
+        >
+          Risques
+        </button>
+        <button
+          className={`projet-detail-tab ${activeTab === 'jalons' ? 'active' : ''}`}
+          onClick={() => handleTabChange('jalons')}
+        >
+          Jalons
+        </button>
+        <button
+          className={`projet-detail-tab ${activeTab === 'reporting' ? 'active' : ''}`}
+          onClick={() => handleTabChange('reporting')}
+        >
+          Reporting
+        </button>
+        <button
           className={`projet-detail-tab ${activeTab === 'details' ? 'active' : ''}`}
-          onClick={() => setActiveTab('details')}
+          onClick={() => handleTabChange('details')}
         >
           Détails
         </button>
         <button
-          className={`projet-detail-tab ${activeTab === 'beneficiaires' ? 'active' : ''}`}
-          onClick={() => setActiveTab('beneficiaires')}
-        >
-          Bénéficiaires ({beneficiaires.length})
-        </button>
-        <button
-          className={`projet-detail-tab ${activeTab === 'appels' ? 'active' : ''}`}
-          onClick={() => setActiveTab('appels')}
-        >
-          Appels ({appels.length})
-        </button>
-        <button
           className={`projet-detail-tab ${activeTab === 'history' ? 'active' : ''}`}
-          onClick={() => setActiveTab('history')}
+          onClick={() => handleTabChange('history')}
         >
           Historique
         </button>
       </div>
 
       <div className="projet-detail-content">
-        {activeTab === 'details' ? (
+        {activeTab === 'dashboard' ? (
+          <ProjetDashboardDetail projetId={id} />
+        ) : activeTab === 'depenses' ? (
+          <DepensesProjet projetId={id} />
+        ) : activeTab === 'activites' ? (
+          <ActivitesProjet projetId={id} />
+        ) : activeTab === 'candidats' ? (
+          <CandidatsProjet projetId={id} />
+        ) : activeTab === 'beneficiaires' ? (
+          <BeneficiairesProjet projetId={id} />
+        ) : activeTab === 'risques' ? (
+          <RisquesProjetDetail projetId={id} />
+        ) : activeTab === 'jalons' ? (
+          <JalonsProjetDetail projetId={id} />
+        ) : activeTab === 'reporting' ? (
+          <ReportingProjetDetail projetId={id} />
+        ) : activeTab === 'details' ? (
           <div className="projet-detail-info">
             <div className="projet-detail-section">
               <h2>Informations générales</h2>
               <div className="projet-detail-grid">
                 <div className="projet-detail-field">
                   <label>Programme</label>
-                  <span>{projet.programmes?.nom || projet.programme_id || '-'}</span>
+                  <span>
+                    {projet.programmes?.nom || projet.programme_id || '-'}
+                    {projet.programme_id && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate(`/programmes/${projet.programme_id}`)}
+                        style={{ marginLeft: '8px' }}
+                      >
+                        <Icon name="ExternalLink" size={14} />
+                      </Button>
+                    )}
+                  </span>
                 </div>
                 <div className="projet-detail-field">
                   <label>Type d'activité</label>
@@ -203,112 +268,9 @@ export default function ProjetDetail() {
               </div>
             )}
           </div>
-        ) : activeTab === 'beneficiaires' ? (
-          <div className="projet-detail-beneficiaires">
-            {loadingBeneficiaires ? (
-              <LoadingState message="Chargement des bénéficiaires..." />
-            ) : beneficiaires.length === 0 ? (
-              <EmptyState 
-                icon="Users" 
-                title="Aucun bénéficiaire" 
-                message="Ce projet n'a pas encore de bénéficiaires associés" 
-              />
-            ) : (
-              <>
-                <div className="beneficiaires-header">
-                  <h2>Bénéficiaires associés ({beneficiaires.length})</h2>
-                  <PermissionGuard permission="beneficiaires.create">
-                    <Button variant="primary" onClick={() => navigate(`/beneficiaires/new?projet_id=${id}`)}>
-                      <Icon name="Plus" size={16} />
-                      Nouveau bénéficiaire
-                    </Button>
-                  </PermissionGuard>
-                </div>
-                <DataTable
-                  columns={[
-                    { key: 'code', label: 'Code' },
-                    { 
-                      key: 'personne', 
-                      label: 'Nom', 
-                      render: (value) => value ? `${value.prenom || ''} ${value.nom || ''}`.trim() || '-' : '-' 
-                    },
-                    { key: 'statut_global', label: 'Statut', render: (value) => (
-                      <span className={`statut-badge statut-${value?.toLowerCase().replace(/\s+/g, '-')}`}>
-                        {value || '-'}
-                      </span>
-                    )},
-                    { 
-                      key: 'actions', 
-                      label: 'Actions', 
-                      render: (_, row) => (
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => navigate(`/beneficiaires/${row.id}`)}
-                        >
-                          Voir détails
-                        </Button>
-                      )
-                    },
-                  ]}
-                  data={beneficiaires}
-                />
-              </>
-            )}
-          </div>
-        ) : activeTab === 'appels' ? (
-          <div className="projet-detail-appels">
-            {loadingAppels ? (
-              <LoadingState message="Chargement des appels..." />
-            ) : appels.length === 0 ? (
-              <EmptyState 
-                icon="Bell" 
-                title="Aucun appel" 
-                message="Ce projet n'a pas encore d'appels à candidatures" 
-              />
-            ) : (
-              <>
-                <div className="appels-header">
-                  <h2>Appels à candidatures ({appels.length})</h2>
-                  <PermissionGuard permission="candidatures.create">
-                    <Button variant="primary" onClick={() => navigate(`/candidatures/appels/new?projet_id=${id}`)}>
-                      <Icon name="Plus" size={16} />
-                      Nouvel appel
-                    </Button>
-                  </PermissionGuard>
-                </div>
-                <DataTable
-                  columns={[
-                    { key: 'titre', label: 'Titre' },
-                    { key: 'statut', label: 'Statut', render: (value) => (
-                      <span className={`statut-badge statut-${value?.toLowerCase().replace(/\s+/g, '-')}`}>
-                        {value || '-'}
-                      </span>
-                    )},
-                    { key: 'date_ouverture', label: 'Date ouverture', render: (value) => value ? formatDate(value) : '-' },
-                    { key: 'date_fermeture', label: 'Date fermeture', render: (value) => value ? formatDate(value) : '-' },
-                    { 
-                      key: 'actions', 
-                      label: 'Actions', 
-                      render: (_, row) => (
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => navigate(`/candidatures/appels/${row.id}`)}
-                        >
-                          Voir détails
-                        </Button>
-                      )
-                    },
-                  ]}
-                  data={appels}
-                />
-              </>
-            )}
-          </div>
         ) : (
           <div className="projet-detail-history">
-            <AuditTrail tableName="projets" recordId={id} />
+            <TimelineHistory tableName="projets" recordId={id} />
           </div>
         )}
       </div>

@@ -12,11 +12,18 @@ import { Icon } from '@/components/common/Icon'
 import { toast } from '@/components/common/Toast'
 import { formatDate, formatCurrency } from '@/utils/format'
 import { logger } from '@/utils/logger'
+import { useNavigate } from 'react-router-dom'
 import './FinancementsProgramme.css'
 
-export default function FinancementsProgramme() {
+/**
+ * Composant de gestion des financements pour un programme spécifique
+ * @param {string} programmeId - ID du programme (optionnel, si non fourni permet de sélectionner)
+ */
+export default function FinancementsProgramme({ programmeId: programmeIdProp = null }) {
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const programmeId = searchParams.get('programme_id')
+  const programmeIdFromUrl = searchParams.get('programme_id')
+  const programmeId = programmeIdProp || programmeIdFromUrl
   
   const [financements, setFinancements] = useState([])
   const [programmes, setProgrammes] = useState([])
@@ -25,8 +32,11 @@ export default function FinancementsProgramme() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (programmeId) {
+      setSelectedProgramme(programmeId)
+    }
     loadData()
-  }, [selectedProgramme])
+  }, [programmeId, selectedProgramme])
 
   const loadData = async () => {
     setLoading(true)
@@ -66,8 +76,28 @@ export default function FinancementsProgramme() {
     }
   }
 
+  const handleRowClick = (row) => {
+    navigate(`/programmes/${row.programme_id}/financements/${row.id}`)
+  }
+
   const columns = [
-    { key: 'financeurs', label: 'Financeur', render: (value) => value?.nom || '-' },
+    { 
+      key: 'financeurs', 
+      label: 'Financeur', 
+      render: (value, row) => (
+        <a 
+          href={`/programmes/${row.programme_id}/financements/${row.id}`}
+          onClick={(e) => {
+            e.preventDefault()
+            handleRowClick(row)
+          }}
+          className="financement-link"
+          title="Voir les détails"
+        >
+          {value?.nom || '-'}
+        </a>
+      )
+    },
     { key: 'programmes', label: 'Programme', render: (value) => value?.nom || '-' },
     { 
       key: 'montant_accorde', 
@@ -99,18 +129,20 @@ export default function FinancementsProgramme() {
   return (
     <div className="financements-programme">
       <div className="financements-header">
-        <h2>Financements par Programme</h2>
-        <div className="financements-filters">
-          <Select
-            label="Filtrer par programme"
-            value={selectedProgramme}
-            onChange={(e) => setSelectedProgramme(e.target.value)}
-            options={[
-              { value: '', label: 'Tous les programmes' },
-              ...(programmes || []).map(p => ({ value: p.id, label: p.nom }))
-            ]}
-          />
-        </div>
+        <h2>{programmeId ? 'Financements du Programme' : 'Financements par Programme'}</h2>
+        {!programmeId && (
+          <div className="financements-filters">
+            <Select
+              label="Filtrer par programme"
+              value={selectedProgramme}
+              onChange={(e) => setSelectedProgramme(e.target.value)}
+              options={[
+                { value: '', label: 'Tous les programmes' },
+                ...(programmes || []).map(p => ({ value: p.id, label: p.nom }))
+              ]}
+            />
+          </div>
+        )}
       </div>
 
       {financements.length === 0 ? (
@@ -139,7 +171,11 @@ export default function FinancementsProgramme() {
           </div>
 
           <div className="financements-list">
-            <DataTable columns={columns} data={financements} />
+            <DataTable 
+              columns={columns} 
+              data={financements}
+              onRowClick={handleRowClick}
+            />
           </div>
         </>
       )}

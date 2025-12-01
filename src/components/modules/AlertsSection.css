@@ -13,3 +13,23 @@
   flex: 1;
 }
 
+.alert-item.clickable {
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.alert-item.clickable:hover {
+  background-color: var(--bg-hover, rgba(0, 0, 0, 0.05));
+  transform: translateX(2px);
+}
+
+.alert-action-icon {
+  flex-shrink: 0;
+  margin-left: auto;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.alert-item.clickable:hover .alert-action-icon {
+  opacity: 1;
+}
+

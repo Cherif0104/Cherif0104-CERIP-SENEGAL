@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { auditService } from '@/services/audit.service'
 import { DataTable } from '@/components/common/DataTable'
 import { Input } from '@/components/common/Input'
@@ -6,13 +6,16 @@ import { Select } from '@/components/common/Select'
 import { Button } from '@/components/common/Button'
 import { LoadingState } from '@/components/common/LoadingState'
 import { Icon } from '@/components/common/Icon'
+import { toast } from '@/components/common/Toast'
 import { logger } from '@/utils/logger'
 import { exportToExcel, formatDataForExport } from '@/utils/exportUtils'
+import { formatDate } from '@/utils/format'
 import './LogsAudit.css'
 
 export default function LogsAudit() {
   const [logs, setLogs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState({
     table: '',
     action: '',
@@ -23,7 +26,7 @@ export default function LogsAudit() {
 
   useEffect(() => {
     loadLogs()
-  }, [filters])
+  }, [])
 
   const loadLogs = async () => {
     setLoading(true)
@@ -38,16 +41,56 @@ export default function LogsAudit() {
 
       if (result.error) {
         logger.error('LOGS_AUDIT', 'Erreur chargement logs', result.error)
+        toast.error('Erreur lors du chargement des logs')
         return
       }
 
       setLogs(result.data || [])
+      logger.debug('LOGS_AUDIT', `${result.data?.length || 0} logs chargés`)
     } catch (error) {
       logger.error('LOGS_AUDIT', 'Erreur inattendue', error)
+      toast.error('Une erreur inattendue est survenue')
     } finally {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    loadLogs()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.table, filters.action, filters.user_id, filters.date_from, filters.date_to])
+
+  // Filtrer et rechercher
+  const filteredLogs = useMemo(() => {
+    return logs.filter(log => {
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase()
+        const matchesSearch = 
+          log.table_name?.toLowerCase().includes(searchLower) ||
+          log.action?.toLowerCase().includes(searchLower) ||
+          log.record_id?.toLowerCase().includes(searchLower) ||
+          log.user_id?.toLowerCase().includes(searchLower)
+        if (!matchesSearch) return false
+      }
+      return true
+    })
+  }, [logs, searchTerm])
+
+  // Calculer les statistiques
+  const stats = useMemo(() => {
+    const inserts = logs.filter(l => l.action === 'INSERT').length
+    const updates = logs.filter(l => l.action === 'UPDATE').length
+    const deletes = logs.filter(l => l.action === 'DELETE').length
+    const views = logs.filter(l => l.action === 'VIEW').length
+
+    return {
+      total: logs.length,
+      inserts,
+      updates,
+      deletes,
+      views
+    }
+  }, [logs])
 
   const handleFilterChange = (field, value) => {
     setFilters((prev) => ({
@@ -76,8 +119,9 @@ export default function LogsAudit() {
       },
     ]
     
-    const formattedData = formatDataForExport(logs, exportColumns)
+    const formattedData = formatDataForExport(filteredLogs, exportColumns)
     exportToExcel(formattedData, 'logs_audit.csv')
+    toast.success('Export réussi')
   }
 
   const getActionIcon = (action) => {
@@ -94,7 +138,7 @@ export default function LogsAudit() {
     {
       key: 'timestamp',
       label: 'Date',
-      render: (value) => (value ? new Date(value).toLocaleString('fr-FR') : '-'),
+      render: (value) => value ? formatDate(value, { includeTime: true }) : '-',
     },
     {
       key: 'table_name',
@@ -105,7 +149,7 @@ export default function LogsAudit() {
       key: 'action',
       label: 'Action',
       render: (value) => (
-        <span className="action-badge" data-action={value}>
+        <span className={`action-badge-modern action-${value?.toLowerCase() || 'unknown'}`}>
           <Icon name={getActionIcon(value)} size={14} />
           {value || '-'}
         </span>
@@ -132,19 +176,63 @@ export default function LogsAudit() {
 
   return (
     <div className="logs-audit">
-      <div className="logs-audit-header">
-        <div>
-          <h2>Logs d'Audit</h2>
-          <p className="subtitle">Historique de toutes les actions effectuées dans le système</p>
+      {/* KPIs Statistiques */}
+      <div className="logs-stats">
+        <div className="stat-card-modern">
+          <div className="stat-icon stat-icon-primary">
+            <Icon name="FileText" size={24} />
+          </div>
+          <div className="stat-content">
+            <div className="stat-value">{stats.total}</div>
+            <div className="stat-label">Total Logs</div>
+          </div>
         </div>
-        <Button variant="primary" onClick={handleExport}>
-          <Icon name="Download" size={16} />
-          Exporter
-        </Button>
+        <div className="stat-card-modern">
+          <div className="stat-icon stat-icon-success">
+            <Icon name="Plus" size={24} />
+          </div>
+          <div className="stat-content">
+            <div className="stat-value">{stats.inserts}</div>
+            <div className="stat-label">Créations</div>
+          </div>
+        </div>
+        <div className="stat-card-modern">
+          <div className="stat-icon stat-icon-warning">
+            <Icon name="Edit" size={24} />
+          </div>
+          <div className="stat-content">
+            <div className="stat-value">{stats.updates}</div>
+            <div className="stat-label">Modifications</div>
+          </div>
+        </div>
+        <div className="stat-card-modern">
+          <div className="stat-icon stat-icon-default">
+            <Icon name="Trash" size={24} />
+          </div>
+          <div className="stat-content">
+            <div className="stat-value">{stats.deletes}</div>
+            <div className="stat-label">Suppressions</div>
+          </div>
+        </div>
       </div>
 
-      <div className="filters-section">
-        <div className="filters-grid">
+      {/* Filtres Modernes */}
+      <div className="liste-filters-modern">
+        <div className="filters-header">
+          <h3>Filtres</h3>
+          <Button variant="primary" onClick={handleExport}>
+            <Icon name="Download" size={16} />
+            Exporter
+          </Button>
+        </div>
+        <div className="filters-content">
+          <Input
+            label="Recherche"
+            type="text"
+            placeholder="Table, action, ID, utilisateur..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <Input
             label="Table"
             value={filters.table}
@@ -181,13 +269,40 @@ export default function LogsAudit() {
             value={filters.date_to}
             onChange={(e) => handleFilterChange('date_to', e.target.value)}
           />
+          {(searchTerm || filters.table || filters.action || filters.user_id || filters.date_from || filters.date_to) && (
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setSearchTerm('')
+                setFilters({
+                  table: '',
+                  action: '',
+                  user_id: '',
+                  date_from: '',
+                  date_to: '',
+                })
+              }}
+            >
+              Réinitialiser
+            </Button>
+          )}
         </div>
       </div>
 
-      <div className="logs-content">
-        <DataTable columns={columns} data={logs} />
+      {/* Barre d'information */}
+      <div className="liste-info-modern">
+        <div className="info-content">
+          <span>
+            <strong>{filteredLogs.length}</strong> log(s) trouvé(s)
+            {filteredLogs.length !== logs.length && ` sur ${logs.length}`}
+          </span>
+        </div>
+      </div>
+
+      {/* Contenu */}
+      <div className="data-table-wrapper">
+        <DataTable columns={columns} data={filteredLogs} />
       </div>
     </div>
   )
 }
-

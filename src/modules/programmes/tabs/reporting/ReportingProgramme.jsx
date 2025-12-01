@@ -11,14 +11,21 @@ import { formatDate, formatCurrency } from '@/utils/format'
 import { logger } from '@/utils/logger'
 import './ReportingProgramme.css'
 
-export default function ReportingProgramme() {
+/**
+ * Composant de reporting pour un programme spécifique
+ * @param {string} programmeId - ID du programme (optionnel, si non fourni permet de sélectionner)
+ */
+export default function ReportingProgramme({ programmeId: programmeIdProp = null }) {
   const [programmes, setProgrammes] = useState([])
-  const [selectedProgramme, setSelectedProgramme] = useState('')
+  const [selectedProgramme, setSelectedProgramme] = useState(programmeIdProp || '')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (programmeIdProp) {
+      setSelectedProgramme(programmeIdProp)
+    }
     loadData()
-  }, [])
+  }, [programmeIdProp])
 
   const loadData = async () => {
     setLoading(true)
@@ -113,26 +120,55 @@ export default function ReportingProgramme() {
 
   return (
     <div className="reporting-programme">
+      {/* Header */}
       <div className="reporting-header">
-        <h2>Rapports par Programme</h2>
+        <div>
+          <h2>Rapports par Programme</h2>
+          <p className="reporting-subtitle">
+            Génération de rapports Excel et PDF pour les programmes
+          </p>
+        </div>
       </div>
 
-      <div className="reporting-content">
-        <div className="rapports-actions">
-          <Button variant="primary" onClick={generateExcelReport} disabled={programmes.length === 0}>
-            <Icon name="FileText" size={16} />
-            Générer rapport Excel (Tous)
-          </Button>
-          <Button variant="secondary" onClick={generatePdfReport} disabled={programmes.length === 0}>
-            <Icon name="File" size={16} />
-            Générer rapport PDF (Tous)
-          </Button>
-        </div>
+      {programmes.length === 0 ? (
+        <EmptyState icon="FileText" title="Aucun programme" message="Aucun rapport à générer" />
+      ) : (
+        <>
+          {/* KPIs Section */}
+          <div className="reporting-stats">
+            <div className="stat-card-modern">
+              <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' }}>
+                <Icon name="FileText" size={24} />
+              </div>
+              <div className="stat-content">
+                <div className="stat-value">{programmes.length}</div>
+                <div className="stat-label">Programmes disponibles</div>
+              </div>
+            </div>
+            <div className="stat-card-modern">
+              <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>
+                <Icon name="CheckCircle" size={24} />
+              </div>
+              <div className="stat-content">
+                <div className="stat-value">2</div>
+                <div className="stat-label">Formats disponibles</div>
+              </div>
+            </div>
+          </div>
 
-        {programmes.length === 0 ? (
-          <EmptyState icon="FileText" title="Aucun programme" message="Aucun rapport à générer" />
-        ) : (
-          <>
+          {/* Actions */}
+          <div className="reporting-content">
+            <div className="rapports-actions">
+              <Button variant="primary" onClick={generateExcelReport} disabled={programmes.length === 0}>
+                <Icon name="FileText" size={16} />
+                Générer rapport Excel (Tous)
+              </Button>
+              <Button variant="secondary" onClick={generatePdfReport} disabled={programmes.length === 0}>
+                <Icon name="File" size={16} />
+                Générer rapport PDF (Tous)
+              </Button>
+            </div>
+
             <div className="rapports-filters">
               <Select
                 label="Rapport pour un programme spécifique"
@@ -160,9 +196,9 @@ export default function ReportingProgramme() {
                 Les rapports PDF sont optimisés pour l'impression.
               </p>
             </div>
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

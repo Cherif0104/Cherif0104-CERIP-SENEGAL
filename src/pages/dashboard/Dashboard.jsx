@@ -6,8 +6,9 @@ import { LoadingState } from '@/components/common/LoadingState'
 import { analyticsService } from '@/services/analytics.service'
 import { predictiveAnalyticsService } from '@/services/predictive-analytics.service'
 import { RecommendationsWidget } from '@/components/dashboard/RecommendationsWidget'
-import { PredictiveChart } from '@/components/dashboard/PredictiveChart'
-import { LineChart, Line, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { KPIDonut } from '@/components/modules/KPIDonut'
+import { DonutChart } from '@/components/modules/DonutChart'
+import { formatCurrency } from '@/utils/format'
 import './Dashboard.css'
 
 export default function Dashboard() {
@@ -212,77 +213,135 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Graphiques */}
+      {/* Graphiques Donut */}
       <div className="dashboard-charts">
-        <div className="dashboard-chart-card">
-          <h3 className="dashboard-chart-title">Évolution Programmes & Projets</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="programmes" stroke="#dc2626" name="Programmes" strokeWidth={2} />
-              <Line type="monotone" dataKey="projets" stroke="#2563eb" name="Projets" strokeWidth={2} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        <KPIDonut
+          title="Budget Total"
+          value={parseFloat(kpis?.budgetConsomme || 0)}
+          total={parseFloat(kpis?.budgetTotal || 0)}
+          label="Consommé"
+          variant="danger"
+          formatValue="currency"
+          subtitle={`${formatCurrency((parseFloat(kpis?.budgetTotal || 0) - parseFloat(kpis?.budgetConsomme || 0)))} restant`}
+          onClick={() => navigate('/programmes')}
+        />
+        <KPIDonut
+          title="Programmes Actifs"
+          value={kpis?.programmesActifs || 0}
+          total={kpis?.programmesTotal || 0}
+          label="Actifs"
+          variant="default"
+          formatValue="number"
+          subtitle={`${(kpis?.programmesTotal || 0) - (kpis?.programmesActifs || 0)} inactifs`}
+          onClick={() => navigate('/programmes')}
+        />
+        <KPIDonut
+          title="Projets en Cours"
+          value={kpis?.projetsEnCours || 0}
+          total={kpis?.projetsTotal || 0}
+          label="En cours"
+          variant="success"
+          formatValue="number"
+          subtitle={`${(kpis?.projetsTotal || 0) - (kpis?.projetsEnCours || 0)} terminés`}
+          onClick={() => navigate('/projets')}
+        />
+      </div>
 
-        <div className="dashboard-chart-card">
-          <h3 className="dashboard-chart-title">Budget Alloué vs Consommé</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={budgetData}>
-              <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="alloué" fill="#dc2626" name="Budget alloué" />
-              <Bar dataKey="consommé" fill="#10b981" name="Budget consommé" />
-            </BarChart>
-          </ResponsiveContainer>
+      {/* Donuts supplémentaires */}
+      <div className="dashboard-charts-row">
+        <div className="donut-chart-card">
+          <DonutChart
+            title="Répartition des programmes"
+            data={[
+              {
+                name: 'actifs',
+                label: 'Actifs',
+                value: kpis?.programmesActifs || 0,
+                color: '#10b981'
+              },
+              {
+                name: 'inactifs',
+                label: 'Inactifs',
+                value: (kpis?.programmesTotal || 0) - (kpis?.programmesActifs || 0),
+                color: '#e5e7eb'
+              }
+            ]}
+            centerValue={kpis?.programmesTotal || 0}
+            centerLabel="Programmes"
+            height={280}
+          />
+        </div>
+        <div className="donut-chart-card">
+          <DonutChart
+            title="Répartition des projets"
+            data={[
+              {
+                name: 'en_cours',
+                label: 'En cours',
+                value: kpis?.projetsEnCours || 0,
+                color: '#3b82f6'
+              },
+              {
+                name: 'termines',
+                label: 'Terminés',
+                value: (kpis?.projetsTotal || 0) - (kpis?.projetsEnCours || 0),
+                color: '#10b981'
+              }
+            ]}
+            centerValue={kpis?.projetsTotal || 0}
+            centerLabel="Projets"
+            height={280}
+          />
         </div>
       </div>
 
-      {/* Prévisions Prédictives */}
+      {/* Prévisions Prédictives en Donuts */}
       {budgetPrediction && budgetPrediction.monthlyProjection && (
-        <div className="dashboard-charts">
-          <div className="dashboard-chart-card">
-            <h3 className="dashboard-chart-title">Prévision Budget (6 mois)</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={budgetPrediction.monthlyProjection}>
-                <defs>
-                  <linearGradient id="budgetGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#dc2626" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#dc2626" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip formatter={(value) => new Intl.NumberFormat('fr-FR', {
-                  style: 'currency',
-                  currency: 'XOF',
-                  minimumFractionDigits: 0,
-                }).format(value)} />
-                <Area 
-                  type="monotone" 
-                  dataKey="predicted" 
-                  stroke="#dc2626" 
-                  fillOpacity={1} 
-                  fill="url(#budgetGradient)"
-                  name="Budget prévu"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-            <div className="chart-notes">
-              <Icon name="Info" size={14} />
-              <span>Basé sur la consommation moyenne mensuelle</span>
-            </div>
+        <div className="dashboard-charts-row">
+          <div className="donut-chart-card">
+            <DonutChart
+              title="Prévision Budget (6 mois)"
+              data={[
+                {
+                  name: 'predicted',
+                  label: 'Prévu',
+                  value: budgetPrediction.monthlyProjection.reduce((sum, m) => sum + (m.predicted || 0), 0),
+                  color: '#dc2626'
+                },
+                {
+                  name: 'available',
+                  label: 'Disponible',
+                  value: Math.max(0, parseFloat(kpis?.budgetTotal || 0) - budgetPrediction.monthlyProjection.reduce((sum, m) => sum + (m.predicted || 0), 0)),
+                  color: '#10b981'
+                }
+              ]}
+              centerValue={formatCurrency(budgetPrediction.monthlyProjection.reduce((sum, m) => sum + (m.predicted || 0), 0))}
+              centerLabel="Prévision"
+              height={280}
+            />
           </div>
-
-          <PredictiveChart title="Prévision Programmes" metric="programmes" />
+          <div className="donut-chart-card">
+            <DonutChart
+              title="Risque Budget"
+              data={[
+                {
+                  name: 'at_risk',
+                  label: 'À risque',
+                  value: budgetPrediction.riskLevel === 'HIGH' ? 80 : budgetPrediction.riskLevel === 'MEDIUM' ? 50 : 20,
+                  color: budgetPrediction.riskLevel === 'HIGH' ? '#ef4444' : budgetPrediction.riskLevel === 'MEDIUM' ? '#f59e0b' : '#10b981'
+                },
+                {
+                  name: 'safe',
+                  label: 'Sécurisé',
+                  value: budgetPrediction.riskLevel === 'HIGH' ? 20 : budgetPrediction.riskLevel === 'MEDIUM' ? 50 : 80,
+                  color: '#e5e7eb'
+                }
+              ]}
+              centerValue={budgetPrediction.riskLevel || 'LOW'}
+              centerLabel="Risque"
+              height={280}
+            />
+          </div>
         </div>
       )}
 

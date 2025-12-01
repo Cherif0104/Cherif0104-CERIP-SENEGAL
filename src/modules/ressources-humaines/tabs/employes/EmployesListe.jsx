@@ -1,32 +1,39 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { employesService } from '@/services/employes.service'
 import { DataTable } from '@/components/common/DataTable'
 import { Button } from '@/components/common/Button'
+import { Input } from '@/components/common/Input'
 import { Select } from '@/components/common/Select'
 import { LoadingState } from '@/components/common/LoadingState'
 import { EmptyState } from '@/components/common/EmptyState'
 import { Icon } from '@/components/common/Icon'
+import { PermissionGuard } from '@/components/common/PermissionGuard'
+import { toast } from '@/components/common/Toast'
 import { logger } from '@/utils/logger'
+import { formatDate } from '@/utils/format'
 import './EmployesListe.css'
 
 export default function EmployesListe() {
   const navigate = useNavigate()
   const [employes, setEmployes] = useState([])
   const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState({
     typeEmploye: '',
     typeContrat: '',
     statut: '',
     prestataire: '',
   })
+  const [viewMode, setViewMode] = useState('table')
+
+  useEffect(() => {
+    loadEmployes()
+  }, [])
 
   const loadEmployes = async () => {
     setLoading(true)
     try {
-      let result
-      
-      // Construire les filtres pour la requête
       const queryFilters = {}
       if (filters.statut) queryFilters.statut = filters.statut
       if (filters.typeEmploye) queryFilters.type_employe = filters.typeEmploye
@@ -34,19 +41,21 @@ export default function EmployesListe() {
       if (filters.prestataire === 'oui') queryFilters.est_prestataire = true
       if (filters.prestataire === 'non') queryFilters.est_prestataire = false
 
-      // Utiliser getAll avec les filtres
-      result = await employesService.getAll({
+      const result = await employesService.getAll({
         filters: queryFilters,
       })
 
       if (result.error) {
         logger.error('EMPLOYES_LISTE', 'Erreur chargement employés', result.error)
+        toast.error('Erreur lors du chargement des employés')
         return
       }
       
       setEmployes(result.data || [])
+      logger.debug('EMPLOYES_LISTE', `${result.data?.length || 0} employés chargés`)
     } catch (error) {
       logger.error('EMPLOYES_LISTE', 'Erreur inattendue', error)
+      toast.error('Une erreur inattendue est survenue')
     } finally {
       setLoading(false)
     }
@@ -56,6 +65,38 @@ export default function EmployesListe() {
     loadEmployes()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.typeEmploye, filters.typeContrat, filters.prestataire, filters.statut])
+
+  // Filtrer et rechercher
+  const filteredEmployes = useMemo(() => {
+    return employes.filter(employe => {
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase()
+        const nomComplet = `${employe.prenom || ''} ${employe.nom || ''}`.trim()
+        const matchesSearch = 
+          nomComplet.toLowerCase().includes(searchLower) ||
+          employe.matricule?.toLowerCase().includes(searchLower) ||
+          employe.email?.toLowerCase().includes(searchLower)
+        if (!matchesSearch) return false
+      }
+      return true
+    })
+  }, [employes, searchTerm])
+
+  // Calculer les statistiques
+  const stats = useMemo(() => {
+    const actifs = employes.filter(e => e.statut === 'ACTIF').length
+    const prestataires = employes.filter(e => e.est_prestataire === true).length
+    const cdi = employes.filter(e => e.type_contrat === 'CDI').length
+    const cdd = employes.filter(e => e.type_contrat === 'CDD').length
+
+    return {
+      total: employes.length,
+      actifs,
+      prestataires,
+      cdi,
+      cdd
+    }
+  }, [employes])
 
   const handleFilterChange = (field, value) => {
     setFilters((prev) => ({
@@ -68,11 +109,29 @@ export default function EmployesListe() {
     {
       key: 'matricule',
       label: 'Matricule',
+      render: (value, row) => (
+        <div 
+          className="employe-name-cell"
+          onClick={() => navigate(`/rh/employes/${row.id}`)}
+        >
+          <span className="employe-code">{value || '-'}</span>
+        </div>
+      ),
     },
     {
       key: 'nom',
-      label: 'Nom',
-      render: (_, row) => `${row.prenom || ''} ${row.nom || ''}`.trim() || '-',
+      label: 'Nom complet',
+      render: (_, row) => {
+        const nomComplet = `${row.prenom || ''} ${row.nom || ''}`.trim() || '-'
+        return (
+          <div 
+            className="employe-name-cell"
+            onClick={() => navigate(`/rh/employes/${row.id}`)}
+          >
+            <span className="employe-name">{nomComplet}</span>
+          </div>
+        )
+      },
     },
     {
       key: 'type_employe',
@@ -103,19 +162,14 @@ export default function EmployesListe() {
     {
       key: 'date_embauche',
       label: 'Date embauche',
-      render: (value) => (value ? new Date(value).toLocaleDateString('fr-FR') : '-'),
-    },
-    {
-      key: 'date_fin_contrat',
-      label: 'Fin contrat',
-      render: (value) => (value ? new Date(value).toLocaleDateString('fr-FR') : '-'),
+      render: (value) => value ? formatDate(value) : '-',
     },
     {
       key: 'statut',
       label: 'Statut',
       render: (value) => (
-        <span className={`statut-badge statut-${value?.toLowerCase().replace(/\s+/g, '-') || 'inconnu'}`}>
-          {value || '-'}
+        <span className={`statut-badge-modern statut-${value?.toLowerCase().replace(/\s+/g, '-') || 'actif'}`}>
+          {value || 'Actif'}
         </span>
       ),
     },
@@ -147,16 +201,75 @@ export default function EmployesListe() {
 
   return (
     <div className="employes-liste">
-      <div className="tab-header">
-        <h2>Liste des Employés</h2>
-        <Button variant="primary" onClick={() => navigate('/rh/employes/new')}>
-          <Icon name="Plus" size={16} />
-          Nouvel employé
-        </Button>
+      {/* KPIs Statistiques */}
+      <div className="employes-stats">
+        <div className="stat-card-modern">
+          <div className="stat-icon stat-icon-primary">
+            <Icon name="Users" size={24} />
+          </div>
+          <div className="stat-content">
+            <div className="stat-value">{stats.total}</div>
+            <div className="stat-label">Total Employés</div>
+          </div>
+        </div>
+        <div className="stat-card-modern">
+          <div className="stat-icon stat-icon-success">
+            <Icon name="CheckCircle" size={24} />
+          </div>
+          <div className="stat-content">
+            <div className="stat-value">{stats.actifs}</div>
+            <div className="stat-label">Actifs</div>
+          </div>
+        </div>
+        <div className="stat-card-modern">
+          <div className="stat-icon stat-icon-default">
+            <Icon name="Briefcase" size={24} />
+          </div>
+          <div className="stat-content">
+            <div className="stat-value">{stats.prestataires}</div>
+            <div className="stat-label">Prestataires</div>
+          </div>
+        </div>
+        <div className="stat-card-modern">
+          <div className="stat-icon stat-icon-warning">
+            <Icon name="FileText" size={24} />
+          </div>
+          <div className="stat-content">
+            <div className="stat-value">{stats.cdi}</div>
+            <div className="stat-label">CDI</div>
+          </div>
+        </div>
       </div>
 
-      <div className="filters-section">
-        <div className="filters-grid">
+      {/* Filtres Modernes */}
+      <div className="liste-filters-modern">
+        <div className="filters-header">
+          <h3>Filtres</h3>
+          <div className="view-mode-toggle">
+            <button
+              className={`view-btn ${viewMode === 'table' ? 'active' : ''}`}
+              onClick={() => setViewMode('table')}
+            >
+              <Icon name="Table" size={16} />
+              Table
+            </button>
+            <button
+              className={`view-btn ${viewMode === 'cards' ? 'active' : ''}`}
+              onClick={() => setViewMode('cards')}
+            >
+              <Icon name="Grid" size={16} />
+              Cartes
+            </button>
+          </div>
+        </div>
+        <div className="filters-content">
+          <Input
+            label="Recherche"
+            type="text"
+            placeholder="Nom, prénom, matricule, email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <Select
             label="Type d'employé"
             value={filters.typeEmploye}
@@ -208,17 +321,129 @@ export default function EmployesListe() {
               { value: 'DEMISSION', label: 'Démission' },
             ]}
           />
+          {(searchTerm || filters.typeEmploye || filters.typeContrat || filters.prestataire || filters.statut) && (
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setSearchTerm('')
+                setFilters({
+                  typeEmploye: '',
+                  typeContrat: '',
+                  statut: '',
+                  prestataire: '',
+                })
+              }}
+            >
+              Réinitialiser
+            </Button>
+          )}
         </div>
       </div>
 
-      {employes.length === 0 ? (
-        <EmptyState icon="Users" title="Aucun employé" message="Commencez par créer un nouvel employé" />
+      {/* Barre d'information */}
+      <div className="liste-info-modern">
+        <div className="info-content">
+          <span>
+            <strong>{filteredEmployes.length}</strong> employé(s) trouvé(s)
+            {filteredEmployes.length !== employes.length && ` sur ${employes.length}`}
+          </span>
+        </div>
+      </div>
+
+      {/* Contenu */}
+      {filteredEmployes.length === 0 ? (
+        <EmptyState
+          icon="Users"
+          title="Aucun employé"
+          message={
+            employes.length === 0
+              ? "Commencez par créer un nouvel employé"
+              : "Aucun employé ne correspond aux filtres"
+          }
+          action={
+            employes.length === 0 && (
+              <PermissionGuard permission="rh.create">
+                <Button onClick={() => navigate('/rh/employes/new')} variant="primary">
+                  <Icon name="Plus" size={16} />
+                  Nouvel employé
+                </Button>
+              </PermissionGuard>
+            )
+          }
+        />
+      ) : viewMode === 'cards' ? (
+        <div className="employes-cards-grid">
+          {filteredEmployes.map(employe => {
+            const nomComplet = `${employe.prenom || ''} ${employe.nom || ''}`.trim() || '-'
+            return (
+              <div key={employe.id} className="employe-card">
+                <div className="employe-card-header">
+                  <h3 className="employe-card-title">{nomComplet}</h3>
+                  {employe.matricule && (
+                    <span className="employe-card-code">{employe.matricule}</span>
+                  )}
+                </div>
+                <div className="employe-card-body">
+                  {employe.type_employe && (
+                    <div className="employe-card-item">
+                      <Icon name="User" size={16} />
+                      <span>{employe.type_employe}</span>
+                    </div>
+                  )}
+                  {employe.type_contrat && (
+                    <div className="employe-card-item">
+                      <Icon name="FileText" size={16} />
+                      <span>
+                        {employe.type_contrat}
+                        {employe.est_prestataire && ' (Prestataire)'}
+                      </span>
+                    </div>
+                  )}
+                  {employe.email && (
+                    <div className="employe-card-item">
+                      <Icon name="Mail" size={16} />
+                      <span>{employe.email}</span>
+                    </div>
+                  )}
+                  {employe.poste?.titre && (
+                    <div className="employe-card-item">
+                      <Icon name="Briefcase" size={16} />
+                      <span>{employe.poste.titre}</span>
+                    </div>
+                  )}
+                  <div className="employe-card-item">
+                    <span className={`statut-badge-modern statut-${employe.statut?.toLowerCase().replace(/\s+/g, '-') || 'actif'}`}>
+                      {employe.statut || 'Actif'}
+                    </span>
+                  </div>
+                </div>
+                <div className="employe-card-actions">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate(`/rh/employes/${employe.id}`)}
+                  >
+                    <Icon name="Eye" size={14} />
+                    Voir détails
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate(`/rh/employes/${employe.id}/edit`)}
+                  >
+                    <Icon name="Edit" size={14} />
+                    Modifier
+                  </Button>
+                </div>
+              </div>
+            )
+          })}
+        </div>
       ) : (
-        <div className="employes-content">
-          <DataTable columns={columns} data={employes} />
+        <div className="data-table-wrapper">
+          <DataTable columns={columns} data={filteredEmployes} />
         </div>
       )}
     </div>
   )
 }
-

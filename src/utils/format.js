@@ -20,6 +20,24 @@ export const formatDateTime = (dateString) => {
   })
 }
 
+export const formatTime = (timeString) => {
+  if (!timeString) return '-'
+  // Si c'est déjà au format HH:MM, le retourner tel quel
+  if (typeof timeString === 'string' && timeString.match(/^\d{2}:\d{2}/)) {
+    return timeString.substring(0, 5) // Prendre seulement HH:MM
+  }
+  // Sinon, essayer de parser comme une date/heure
+  try {
+    const date = new Date(`2000-01-01T${timeString}`)
+    return date.toLocaleTimeString('fr-FR', {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  } catch {
+    return timeString
+  }
+}
+
 export const formatCurrency = (amount, currency = 'XOF') => {
   if (amount === null || amount === undefined) return '-'
   return new Intl.NumberFormat('fr-FR', {

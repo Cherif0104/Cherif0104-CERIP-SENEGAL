@@ -1,0 +1,239 @@
+/* Styles identiques à DepensesProjet.css pour cohérence */
+.candidats-projet {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.candidats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.candidats-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.candidats-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.candidats-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.stat-value.success {
+  color: #10b981;
+}
+
+.stat-value.danger {
+  color: #ef4444;
+}
+
+.candidats-filters {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+}
+
+.candidats-filters .input-wrapper,
+.candidats-filters .select-wrapper {
+  flex: 1;
+  min-width: 150px;
+}
+
+.candidats-summary {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  border-radius: 4px;
+}
+
+.candidats-summary p {
+  margin: 0;
+  color: #1e40af;
+  font-size: 14px;
+}
+
+.candidat-statut {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.candidat-statut.statut-eligible {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.candidat-statut.statut-non_eligible {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.candidat-statut.statut-en_attente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .candidats-projet {
+    padding: 16px;
+  }
+
+  .candidats-header {
+    flex-direction: column;
+  }
+
+  .candidats-actions {
+    width: 100%;
+  }
+
+  .candidats-stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .candidats-filters {
+    flex-direction: column;
+  }
+
+  .candidats-filters .input-wrapper,
+  .candidats-filters .select-wrapper {
+    width: 100%;
+  }
+}
+
+/* Section Appels */
+.appels-section {
+  margin-bottom: 32px;
+  padding: 24px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.appels-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.appels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.appel-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.appel-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-color: #d1d5db;
+}
+
+.appel-info h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.appel-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.appel-statut {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.appel-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.appels-empty {
+  margin-bottom: 32px;
+}
+
+/* Tablette */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .candidats-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

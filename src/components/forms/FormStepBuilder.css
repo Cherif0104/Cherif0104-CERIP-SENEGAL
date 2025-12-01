@@ -1,0 +1,17 @@
+.form-step-content {
+  padding: 24px 0;
+}
+
+.form-step-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.form-step-description {
+  margin: 0 0 16px 0;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+}
+

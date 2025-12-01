@@ -28,8 +28,17 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 // Create client - will use placeholder if env vars are missing
+// Configuration pour persister la session dans localStorage
 export const supabase = createClient(
   supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key'
+  supabaseAnonKey || 'placeholder-key',
+  {
+    auth: {
+      persistSession: true, // Persister la session dans localStorage
+      autoRefreshToken: true, // Rafraîchir automatiquement le token
+      detectSessionInUrl: true, // Détecter la session dans l'URL (pour OAuth)
+      storage: typeof window !== 'undefined' ? window.localStorage : undefined, // Utiliser localStorage
+    },
+  }
 )
 

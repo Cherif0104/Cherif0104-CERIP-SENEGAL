@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/common/Button'
@@ -14,8 +14,16 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const { signIn } = useAuth()
+  const { signIn, isAuthenticated, loading: authLoading } = useAuth()
   const navigate = useNavigate()
+
+  // Rediriger vers le dashboard si déjà authentifié
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      logger.debug('LOGIN', 'Utilisateur déjà authentifié, redirection vers dashboard')
+      navigate('/', { replace: true })
+    }
+  }, [isAuthenticated, authLoading, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -37,7 +45,9 @@ export default function Login() {
         setError(result.error.message || 'Erreur de connexion')
       } else {
         logger.action('LOGIN_SUCCESS', { email })
-        navigate('/')
+        // Toujours rediriger vers le Dashboard après connexion
+        // Ignorer la location précédente pour forcer le Dashboard
+        navigate('/', { replace: true })
       }
     } catch (err) {
       logger.error('AUTH', 'Exception lors de la connexion', err)

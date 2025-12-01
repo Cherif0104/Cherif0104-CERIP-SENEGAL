@@ -1,0 +1,383 @@
+.timeline-history {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.timeline-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e5e7eb;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.timeline-history-title-section h3 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.timeline-history-count {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.timeline-history-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.timeline-period-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeline-period-selector label {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.timeline-period-select {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #374151;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.timeline-period-select:hover {
+  border-color: #9ca3af;
+}
+
+.timeline-period-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.timeline-refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timeline-history-content {
+  position: relative;
+}
+
+.timeline-date-group {
+  margin-bottom: 40px;
+}
+
+.timeline-date-group:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-date-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.timeline-date-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+}
+
+.timeline-date-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  padding: 6px 16px;
+  background: #f9fafb;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.timeline-items {
+  padding-left: 32px;
+  position: relative;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.timeline-item:hover {
+  transform: translateX(4px);
+}
+
+.timeline-item.selected {
+  background: #f0f9ff;
+  border-radius: 8px;
+  padding: 12px;
+  margin: -12px;
+  margin-bottom: 12px;
+}
+
+.timeline-item-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.timeline-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.timeline-item:hover .timeline-dot {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.timeline-item-line {
+  width: 2px;
+  flex: 1;
+  background: #e5e7eb;
+  margin-top: 4px;
+  min-height: 40px;
+}
+
+.timeline-item-content {
+  flex: 1;
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.timeline-item:hover .timeline-item-content {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.timeline-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.timeline-item-action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.timeline-action-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.timeline-item-time {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.timeline-item-user {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.timeline-item-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.timeline-comparison {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border-left: 3px solid #3b82f6;
+}
+
+.comparison-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.comparison-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.comparison-item {
+  padding: 12px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.comparison-field {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.comparison-values {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.comparison-old,
+.comparison-new {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.comparison-label {
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.comparison-value {
+  font-size: 13px;
+  color: #1f2937;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.comparison-old .comparison-value {
+  color: #ef4444;
+  text-decoration: line-through;
+}
+
+.comparison-new .comparison-value {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.comparison-arrow {
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.timeline-item-metadata {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.timeline-item-metadata pre {
+  margin: 8px 0 0 0;
+  font-size: 11px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.timeline-history-error {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .timeline-history {
+    padding: 16px;
+  }
+
+  .timeline-history-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .timeline-history-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .timeline-period-selector {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .timeline-items {
+    padding-left: 24px;
+  }
+
+  .timeline-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .comparison-values {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .comparison-arrow {
+    transform: rotate(90deg);
+  }
+}

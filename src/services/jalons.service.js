@@ -6,6 +6,30 @@ import { logger } from '@/utils/logger'
  */
 export const jalonsService = {
   /**
+   * Récupérer un jalon par ID
+   */
+  async getById(id) {
+    try {
+      logger.debug('JALONS_SERVICE', 'getById appelé', { id })
+      const { data, error } = await supabase
+        .from('programme_jalons')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+      if (error) {
+        logger.error('JALONS_SERVICE', 'Erreur getById', { id, error })
+        throw error
+      }
+
+      return { data: data || null, error: null }
+    } catch (error) {
+      logger.error('JALONS_SERVICE', 'Erreur globale getById', { id, error })
+      return { data: null, error }
+    }
+  },
+
+  /**
    * Récupérer tous les jalons d'un programme
    */
   async getByProgramme(programmeId) {

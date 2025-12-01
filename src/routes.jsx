@@ -51,6 +51,11 @@ const CompetenceDetail = lazy(() => import('./modules/ressources-humaines/tabs/c
 const UtilisateurForm = lazy(() => import('./modules/administration/tabs/utilisateurs/UtilisateurForm'))
 const UtilisateurDetail = lazy(() => import('./modules/administration/tabs/utilisateurs/UtilisateurDetail'))
 const Referentiels = lazy(() => import('./pages/admin/Referentiels'))
+const DepenseFormPage = lazy(() => import('./pages/depenses/DepenseFormPage'))
+const DepenseDetail = lazy(() => import('./pages/depenses/DepenseDetail'))
+const FinancementDetail = lazy(() => import('./pages/financements/FinancementDetail'))
+const JalonDetail = lazy(() => import('./pages/jalons/JalonDetail'))
+const RedirectRoute = lazy(() => import('./components/common/RedirectRoute'))
 
 // Wrapper pour lazy loading avec Suspense
 const LazyWrapper = ({ children }) => (
@@ -206,6 +211,55 @@ export const router = createBrowserRouter([
         element: (
           <LazyWrapper>
             <ProgrammeForm />
+          </LazyWrapper>
+        ),
+      },
+      {
+        path: 'programmes/:programme_id/depenses/new',
+        element: (
+          <LazyWrapper>
+            <DepenseFormPage />
+          </LazyWrapper>
+        ),
+      },
+      {
+        path: 'programmes/:programme_id/depenses/:id/edit',
+        element: (
+          <LazyWrapper>
+            <DepenseFormPage />
+          </LazyWrapper>
+        ),
+      },
+      {
+        path: 'programmes/:programme_id/depenses/:id',
+        element: (
+          <LazyWrapper>
+            <DepenseDetail />
+          </LazyWrapper>
+        ),
+      },
+      {
+        path: 'programmes/:programme_id/financements/:id',
+        element: (
+          <LazyWrapper>
+            <FinancementDetail />
+          </LazyWrapper>
+        ),
+      },
+      {
+        path: 'programmes/:programme_id/jalons/:id',
+        element: (
+          <LazyWrapper>
+            <JalonDetail />
+          </LazyWrapper>
+        ),
+      },
+      // Redirection pour l'ancienne route des dépenses
+      {
+        path: 'depenses/new',
+        element: (
+          <LazyWrapper>
+            <RedirectRoute to="/programmes/:programme_id/depenses/new" />
           </LazyWrapper>
         ),
       },

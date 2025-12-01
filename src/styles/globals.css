@@ -1,4 +1,6 @@
 @import './variables.css';
+@import './module-base.css';
+@import './dashboard-base.css';
 
 * {
   margin: 0;

@@ -6,7 +6,7 @@ export const AlertsSection = ({ alerts = [], className = '' }) => {
     return null
   }
 
-  const priorityOrder = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 }
+  const priorityOrder = { CRITICAL: 5, HIGH: 4, WARNING: 3, MEDIUM: 2, LOW: 1 }
   const sortedAlerts = [...alerts].sort(
     (a, b) => (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0)
   )
@@ -16,6 +16,8 @@ export const AlertsSection = ({ alerts = [], className = '' }) => {
       case 'CRITICAL':
         return 'AlertCircle'
       case 'HIGH':
+        return 'AlertTriangle'
+      case 'WARNING':
         return 'AlertTriangle'
       case 'MEDIUM':
         return 'Info'
@@ -34,7 +36,12 @@ export const AlertsSection = ({ alerts = [], className = '' }) => {
       </h3>
       <div className="alerts-list">
         {sortedAlerts.map((alert, index) => (
-          <div key={index} className={`alert-item ${alert.priority || 'LOW'}`}>
+          <div 
+            key={index} 
+            className={`alert-item ${alert.priority || 'LOW'} ${alert.action ? 'clickable' : ''}`}
+            onClick={alert.action || undefined}
+            style={alert.action ? { cursor: 'pointer' } : {}}
+          >
             <Icon
               name={getPriorityIcon(alert.priority)}
               size={20}
@@ -46,6 +53,9 @@ export const AlertsSection = ({ alerts = [], className = '' }) => {
                 <div className="alert-item-description">{alert.description}</div>
               )}
             </div>
+            {alert.action && (
+              <Icon name="ChevronRight" size={16} className="alert-action-icon" />
+            )}
           </div>
         ))}
       </div>
